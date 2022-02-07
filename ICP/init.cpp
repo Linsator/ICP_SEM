@@ -65,7 +65,7 @@ void init_shader()
 	//shaders basic_shader = shaders("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	shaders basic_tex_shader = shaders("resources/shaders/basic_tex.vert", "resources/shaders/basic_tex.frag");
 	basic_tex_shader.activate();
-	globals.shader_ready = true
+	globals.shader_ready = true;
 }
 
 void init_glfw(void)
