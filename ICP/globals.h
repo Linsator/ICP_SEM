@@ -6,6 +6,7 @@
 
 // GLFW toolkit
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
 // OpenCV 
 #include <opencv2\opencv.hpp>
@@ -14,17 +15,12 @@
 #include "lua_engine.h"
 
 typedef struct  Avatar {   // camera (player) info
-	float       posX;
-	float       posY;      //height
-	float       posZ;
-	float		radius;
 
-	float       move_h_angle;   // Yaw
-	float		move_v_angle;   // Pitch
-	   					       //(no Roll)
-	float       cam_h_angle;   // Yaw
-	float		cam_v_angle;   // Pitch
-							   //(no Roll)
+	glm::vec3 position;
+
+	glm::vec3 lookAt; // look direction, not coors where to look at
+
+	float		radius;
 
 	float		mouse_sensitivity;
 	bool		lock_cam_move_angles;

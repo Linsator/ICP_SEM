@@ -2,6 +2,70 @@
 
 #include "init.h"
 #include "callbacks.h"
+#include "shaders.h"
+
+void init(void)
+{
+	init_glfw();
+	init_glew();
+	gl_print_info();
+	init_shader();
+	init_avatar();
+	
+	// i don't have camera
+	//init_camera();
+
+}
+
+static void init_camera(void)
+{
+	globals.capture = cv::VideoCapture(cv::CAP_DSHOW);
+
+	if (!globals.capture.isOpened())
+	{
+		std::cerr << "no camera" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+	else
+	{
+		std::cout << "Camera " <<
+			": width=" << globals.capture.get(cv::CAP_PROP_FRAME_WIDTH) <<
+			", height=" << globals.capture.get(cv::CAP_PROP_FRAME_HEIGHT) <<
+			", FPS=" << globals.capture.get(cv::CAP_PROP_FPS) << std::endl;
+	}
+
+	if (!globals.capture.set(cv::CAP_PROP_FRAME_WIDTH, 640))
+		std::cout << "Failed width." << std::endl;
+	if (!globals.capture.set(cv::CAP_PROP_FRAME_HEIGHT, 480))
+		std::cout << "Failed height." << std::endl;
+	if (!globals.capture.set(cv::CAP_PROP_FPS, 30))
+		std::cout << "Failed FPS." << std::endl;
+
+	std::cout << "Camera changed:" <<
+		": width=" << globals.capture.get(cv::CAP_PROP_FRAME_WIDTH) <<
+		", height=" << globals.capture.get(cv::CAP_PROP_FRAME_HEIGHT) <<
+		", FPS=" << globals.capture.get(cv::CAP_PROP_FPS) << std::endl;
+}
+
+
+void init_avatar() {
+	globals.camera = new Avatar();
+
+	globals.camera->position = glm::vec3(0, 10.0f, 0);
+	globals.camera->lookAt = glm::vec3(1.0f, 0.0f, 0.0f);
+	globals.camera->movement_speed = 1.0f;
+	globals.camera->mouse_sensitivity = 0.1f;
+
+	//disable mouse
+	glfwSetInputMode(globals.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void init_shader()
+{
+	//shaders basic_shader = shaders("resources/shaders/basic.vert", "resources/shaders/basic.frag");
+	shaders basic_tex_shader = shaders("resources/shaders/basic_tex.vert", "resources/shaders/basic_tex.frag");
+	basic_tex_shader.activate();
+}
 
 void init_glfw(void)
 {
@@ -23,8 +87,8 @@ void init_glfw(void)
 	// Shader based, modern OpenGL (3.3 and higher)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // only new functions
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE); // only old functions (for old tutorials etc.)
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // only new functions
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE); // only old functions (for old tutorials etc.)
 
 	glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
 	globals.window = glfwCreateWindow(800, 600, "OpenGL context", NULL, NULL);
