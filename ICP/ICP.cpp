@@ -105,12 +105,14 @@ void reset_projection()
 		0.1f,                // Near clipping plane. Keep as big as possible, or you'll get precision issues.
 		20000.0f              // Far clipping plane. Keep as little as possible.
 	);
+	if (globals.shader_ready)
+	{
+		GLint currProgram;
+		glGetIntegerv(GL_CURRENT_PROGRAM, &currProgram);
 
-	GLint currProgram;
-	glGetIntegerv(GL_CURRENT_PROGRAM, &currProgram);
-
-	// set projection for all shaders
-	glUniformMatrix4fv(glGetUniformLocation(currProgram, "uProj_m"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+		// set projection for all shaders
+		glUniformMatrix4fv(glGetUniformLocation(currProgram, "uProj_m"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	}
 	
 }
 

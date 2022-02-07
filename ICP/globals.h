@@ -41,6 +41,8 @@ struct s_globals {
 
 	double app_start_time;
 
+	bool shader_ready = false;
+
 	Avatar * camera;
 
 	cv::VideoCapture capture;

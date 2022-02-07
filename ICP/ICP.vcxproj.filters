@@ -60,4 +60,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\shaders\basic.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\shaders\basic.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\shaders\basic_tex.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\shaders\basic_tex.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\shaders\toon.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\shaders\toon.vert">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="resources\shaders\toon_uni.frag">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
