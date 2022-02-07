@@ -39,18 +39,24 @@
 
 /* TODO:
 * realtime 2D raster processing = tracker (can be separate project), threads:
-*
-* 3D GL (glew), shaders:*
-*
+*	Cam face tracking in separate thread
+*	set face coors as avatar offset
+*	
 * multiple moving 3D models, at leats one loaded from file:
-*
+*	Moving targets, Bow, Arrow, transparent obstacle
+* 
 * textures:
-*
+*	find textures
+*	update obj loader and mesh to load textures automaticaly
+*	
 * lighting model, at least 2 lights (1x ambient + Nx something else):
-*
+*	Update shader to use lighning
+*	place lights into scene
+* 
 * correct transparency:
-*
+*	
 * collisions:
+*	Physics of arrow (movement and collision)
 *
 ** EXTRAS
 ** height map textured by height, proper player height coords
@@ -60,6 +66,7 @@
 *
 * DONE:
 * mouse (both axes), keyboard, fullscreen vs. windowed switching:
+* 3D GL (glew), shaders:*
 */
 
 // forward declarations
