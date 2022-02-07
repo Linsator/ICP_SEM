@@ -67,6 +67,9 @@ void init_all();
 void reset_projection();
 void toFullscreen();
 void toWindowed();
+void app_loop();
+void draw_scene();
+void physics_step();
 
 
 // sem nic nedávat!!!
@@ -78,7 +81,7 @@ int main(int argc, char** argv)
 {
 	init_all(); // init all in init.cpp
 	
-
+	app_loop();
 
 	finalize(EXIT_SUCCESS);
 }
@@ -89,6 +92,60 @@ void init_all()
 	reset_projection();
 }
 
+void app_loop()
+{
+	// Main application loop:
+	// Run until exit is requested.
+	while (!glfwWindowShouldClose(globals.window))
+	{
+		// Clear color buffer
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// Render here 
+		{ 
+			/* TODO camera part
+			if (new_frame) {
+				frame.copyTo(local_frame);
+				local_center_relative = center_relative;
+				new_frame = false;
+
+				// flip image vertically: screen coordinates and GL world coordinates have opposite Y-axis orientation
+				cv::flip(local_frame, local_frame, 0);
+				local_center_relative.y = 1.0f + -1.0f * local_center_relative.y;
+			}
+			{
+				// show image using GL, simple method, direct pixel copy
+				//glRasterPos2i(0, 0);
+				//glDrawPixels(local_frame.cols, local_frame.rows, GL_BGR, GL_UNSIGNED_BYTE, local_frame.data);
+			}
+			*/
+		}
+
+		//draw_scene(local_center_relative);
+		physics_step();
+		draw_scene();
+		// ...
+
+		// Swap front and back buffers 
+		// Calls glFlush() inside
+		glfwSwapBuffers(globals.window);
+
+		// Check OpenGL errors
+		gl_check_error();
+
+		// Poll for and process events
+		glfwPollEvents();
+	}
+}
+
+void physics_step()
+{
+
+}
+void draw_scene()
+{
+
+}
 
 
 
