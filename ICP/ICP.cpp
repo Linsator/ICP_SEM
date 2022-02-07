@@ -29,6 +29,7 @@
 #include "init.h"
 #include "callbacks.h"
 #include "glerror.h" // Check for GL errors
+#include "shaders.h"
 
 #include "lua_engine.h"
 #include "lua_interface.h"
@@ -77,6 +78,10 @@ void toWindowed();
 void app_loop();
 void draw_scene();
 void physics_step();
+void stat_tracking();
+
+//global variables
+shaders shader;
 
 
 // sem nic nedávat!!!
@@ -95,7 +100,7 @@ int main(int argc, char** argv)
 
 void init_all()
 {
-	init();
+	shader = init();
 	reset_projection();
 }
 
@@ -149,9 +154,61 @@ void physics_step()
 {
 
 }
+
 void draw_scene()
 {
+	stat_tracking();
+	//
+	// DRAW
+	//
+	
 
+	// Set the camera to use avatar
+	glm::mat4 mv_m = glm::lookAt(globals.avatar->position, globals.avatar->position + globals.avatar->lookAt, glm::vec3(0.0f, 1.0f, 0.0f));
+
+
+	// plane with texture
+	{
+		// activate shader with textures support
+		shader.activate();
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(mv_m));
+		// set diffuse material
+		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
+		//set texture unit
+		glActiveTexture(GL_TEXTURE0);
+		//send unit number to FS
+		glUniform1i(glGetUniformLocation(shader.ID, "tex0"), 0);
+		// draw object
+		//TODO mesh2_draw(mesh2_floor);
+	}
+
+
+
+
+
+
+}
+
+void stat_tracking()
+{
+	// Time measurement, FPS count etc.
+	static double time_fps_old = 0.0;
+	static double time_frame_old = 0.0;
+	static int frame_cnt = 0;
+	double time_current, time_frame_delta;
+
+	time_current = glfwGetTime();
+	time_frame_delta = time_current - time_frame_old;
+	time_frame_old = time_current;
+
+	//FPS
+	if (time_current - time_fps_old > 1.0)
+	{
+		time_fps_old = time_current;
+		std::cout << "FPS: " << frame_cnt << std::endl;
+		frame_cnt = 0;
+	}
+	frame_cnt++;
 }
 
 
@@ -237,30 +294,30 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			toWindowed();
 			break;
 		case GLFW_KEY_W:
-			avatarMoveForward(*(globals.camera));
+			avatarMoveForward(*(globals.avatar));
 			break;
 		case GLFW_KEY_S:
-			avatarMoveBackward(*(globals.camera));
+			avatarMoveBackward(*(globals.avatar));
 			break;
 		case GLFW_KEY_A:
-			avatarMoveLeft(*(globals.camera));
+			avatarMoveLeft(*(globals.avatar));
 			break;
 		case GLFW_KEY_D:
-			avatarMoveRight(*(globals.camera));
+			avatarMoveRight(*(globals.avatar));
 			break;
 		case GLFW_KEY_E:
-			avatarMoveUp(*(globals.camera));
+			avatarMoveUp(*(globals.avatar));
 			break;
 		case GLFW_KEY_LEFT_CONTROL:
 		case GLFW_KEY_Q:
-			avatarMoveDown(*(globals.camera));
+			avatarMoveDown(*(globals.avatar));
 			break;
 		case GLFW_KEY_KP_ADD:
-			globals.camera->movement_speed += 1;
+			globals.avatar->movement_speed += 1;
 			break;
 		case GLFW_KEY_KP_SUBTRACT:
-			if (globals.camera->movement_speed > 1) {
-				globals.camera->movement_speed -= 1;
+			if (globals.avatar->movement_speed > 1) {
+				globals.avatar->movement_speed -= 1;
 			}
 			break;
 			/* TODO once drawing is added, this is used to disable printing of stats
@@ -296,8 +353,8 @@ void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 		move_h_angle = -xpos + old_x;
 		move_v_angle = -ypos + old_y;
 
-		move_h_angle = move_h_angle * (*(globals.camera)).mouse_sensitivity;
-		move_v_angle = move_v_angle * (*(globals.camera)).mouse_sensitivity;
+		move_h_angle = move_h_angle * (*(globals.avatar)).mouse_sensitivity;
+		move_v_angle = move_v_angle * (*(globals.avatar)).mouse_sensitivity;
 
 		cam_h_angle = cam_h_angle - move_h_angle;
 		cam_v_angle = cam_v_angle + move_v_angle;
@@ -316,7 +373,7 @@ void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 		front.y = sin(glm::radians(cam_v_angle));
 		front.z = sin(glm::radians(cam_h_angle)) * cos(glm::radians(cam_v_angle));
 
-		globals.camera->lookAt = glm::normalize(front);
+		globals.avatar->lookAt = glm::normalize(front);
 
 		old_x = xpos;
 		old_y = ypos;

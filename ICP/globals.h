@@ -43,7 +43,7 @@ struct s_globals {
 
 	bool shader_ready = false;
 
-	Avatar * camera;
+	Avatar * avatar;
 
 	cv::VideoCapture capture;
 	lua_engine lua;
