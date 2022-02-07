@@ -87,11 +87,14 @@ void draw_scene();
 void physics_step();
 void stat_tracking();
 void create_mesh();
+void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 
 //global variables
 shaders shader;
 bool stats = false;
 mesh mesh_floor;
+mesh mesh_target;
+unsigned int target_num = 1;
 
 // sem nic nedávat!!!
 
@@ -113,11 +116,30 @@ void init_all()
 	shader = init();
 	reset_projection();
 	create_mesh();
+
+
+	//since GL 4.3
+	glDebugMessageCallback(MessageCallback, 0);
+	glEnable(GL_DEBUG_OUTPUT);
+
+	gl_print_info();
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_POLYGON_SMOOTH); //antialiasing
+	glEnable(GL_LINE_SMOOTH);
+
+	// ALL objects are non-transparent 
+	glEnable(GL_CULL_FACE);
+
+	// scene contains semi-transparent objects
+	//glDisable( GL_CULL_FACE );                    // no polygon removal
 }
 
 void create_mesh()
 {
 	mesh_floor = gen_mesh_floor("resources/placeholder.png", 1000);
+	mesh_target = gen_mesh_cube("resources/placeholder.png");
+
 }
 
 void app_loop()
@@ -180,7 +202,9 @@ void draw_scene()
 	//
 	// DRAW
 	//
-	
+	double speed_multiplier = 4.0;
+	float spin_radius = 10.0f;
+	double t = speed_multiplier * glfwGetTime();
 
 	// Set the camera to use avatar
 	glm::mat4 mv_m = glm::lookAt(globals.avatar->position, globals.avatar->position + globals.avatar->lookAt, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -201,6 +225,23 @@ void draw_scene()
 		mesh_draw(mesh_floor);
 	}
 
+	double phase_shift = (2 * glm::pi<float>())/ target_num;
+	for(int i = 0; i < target_num; i ++){
+		
+		auto target = glm::translate(mv_m, glm::vec3( 50.0f, spin_radius + spin_radius * cos(t + phase_shift*i), spin_radius * sin(t + phase_shift*i)));
+		//set material 
+		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
+		reset_projection();
+		//scale
+		target = glm::scale(target, glm::vec3(10.0f));
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(target));
+		//set texture unit
+		glActiveTexture(GL_TEXTURE0);
+		//send unit number to FS
+		glUniform1i(glGetUniformLocation(shader.ID, "tex0"), 0);
+		//draw
+		mesh_draw(mesh_target);
+	}
 
 
 
@@ -300,7 +341,7 @@ void fbsize_callback(GLFWwindow* window, int width, int height)
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	static bool f_screen = true;
+	static bool f_screen = false;
 	if ((action == GLFW_PRESS) || (action == GLFW_REPEAT))
 	{
 		switch (key) {
@@ -308,11 +349,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			glfwSetWindowShouldClose(window, GL_TRUE);
 			break;
 		case GLFW_KEY_F:
-			f_screen = !f_screen;
 			if (f_screen)
 				toWindowed();
 			else
 				toFullscreen();
+			f_screen = !f_screen;
 			break;
 		case GLFW_KEY_G:
 			// do nothing!
@@ -332,11 +373,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_E:
 			avatarMoveUp(*(globals.avatar));
 			break;
-		case GLFW_KEY_SPACE:
-			avatarMoveUp(*(globals.avatar));
-			avatarMoveForward(*(globals.avatar));
-			avatarMoveDown(*(globals.avatar));
-			break;
 		case GLFW_KEY_LEFT_CONTROL:
 		case GLFW_KEY_Q:
 			avatarMoveDown(*(globals.avatar));
@@ -349,10 +385,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 				globals.avatar->movement_speed -= 1;
 			}
 			break;
-			case GLFW_KEY_F1:
-				stats = stats ? false : true; // switch state
-				break;
-			
+		case GLFW_KEY_F1:
+			stats = stats ? false : true; // switch state
+			break;
+		case GLFW_KEY_UP:
+			target_num++;
+			break;
+		case GLFW_KEY_DOWN:
+			if (target_num > 1) {
+				target_num--;
+			}
+			break;
 		default:
 			break;
 		}
@@ -422,4 +465,25 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 			std::cout << "Right mouse button pressed!" << std::endl;
 		}
 	}
+}
+
+void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+	switch (severity)
+	{
+	case GL_DEBUG_SEVERITY_HIGH:
+		std::cout << "HIGH: ";
+		break;
+	case GL_DEBUG_SEVERITY_MEDIUM:
+		std::cout << "MEDIUM: ";
+		break;
+	default:
+		return;
+		break;
+	}
+
+	std::cout << "[GL CALLBACK]: " << (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "") <<
+		"type = 0x" << std::hex << type <<
+		", severity = 0x" << std::hex << severity <<
+		", message = '" << message << '\'' << std::endl << std::dec;
 }
