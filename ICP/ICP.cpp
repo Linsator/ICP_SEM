@@ -287,7 +287,7 @@ void fbsize_callback(GLFWwindow* window, int width, int height)
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	static bool f_screen;
+	static bool f_screen = true;
 	if ((action == GLFW_PRESS) || (action == GLFW_REPEAT))
 	{
 		switch (key) {
@@ -318,6 +318,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			break;
 		case GLFW_KEY_E:
 			avatarMoveUp(*(globals.avatar));
+			break;
+		case GLFW_KEY_SPACE:
+			avatarMoveUp(*(globals.avatar));
+			avatarMoveForward(*(globals.avatar));
+			avatarMoveDown(*(globals.avatar));
 			break;
 		case GLFW_KEY_LEFT_CONTROL:
 		case GLFW_KEY_Q:
