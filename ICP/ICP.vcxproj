@@ -163,6 +163,7 @@
     <ClCompile Include="init.cpp" />
     <ClCompile Include="lua_engine.cpp" />
     <ClCompile Include="lua_interface.cpp" />
+    <ClCompile Include="OBJloader.cpp" />
     <ClCompile Include="shaders.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +173,7 @@
     <ClInclude Include="init.h" />
     <ClInclude Include="lua_engine.h" />
     <ClInclude Include="lua_interface.h" />
+    <ClInclude Include="OBJloader.h" />
     <ClInclude Include="shaders.h" />
   </ItemGroup>
   <ItemGroup>
