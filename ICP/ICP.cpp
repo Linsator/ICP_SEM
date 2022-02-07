@@ -373,6 +373,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_E:
 			avatarMoveUp(*(globals.avatar));
 			break;
+		case GLFW_KEY_SPACE:
+			// jump pls
+			break;
 		case GLFW_KEY_LEFT_CONTROL:
 		case GLFW_KEY_Q:
 			avatarMoveDown(*(globals.avatar));
