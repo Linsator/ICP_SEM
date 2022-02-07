@@ -191,6 +191,9 @@
     <None Include="resources\shaders\toon.vert" />
     <None Include="resources\shaders\toon_uni.frag" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\placeholder.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -7,7 +7,7 @@
 #include "mesh.h"
 #include "mesh_gen.h"
 
-mesh gen_mesh_floor(std::string tex_path, unsigned int size)
+mesh gen_mesh_floor(std::string tex_path, int size)
 {
 	mesh tmpmesh;
 	std::vector<vertex> vertices = {

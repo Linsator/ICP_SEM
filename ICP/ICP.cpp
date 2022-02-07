@@ -30,6 +30,8 @@
 #include "callbacks.h"
 #include "glerror.h" // Check for GL errors
 #include "shaders.h"
+#include "mesh.h"
+#include "mesh_gen.h"
 
 #include "lua_engine.h"
 #include "lua_interface.h"
@@ -84,10 +86,12 @@ void app_loop();
 void draw_scene();
 void physics_step();
 void stat_tracking();
+void create_mesh();
 
 //global variables
 shaders shader;
 bool stats = false;
+mesh mesh_floor;
 
 // sem nic nedávat!!!
 
@@ -108,6 +112,12 @@ void init_all()
 {
 	shader = init();
 	reset_projection();
+	create_mesh();
+}
+
+void create_mesh()
+{
+	mesh_floor = gen_mesh_floor("resources/placeholder.png", 1000);
 }
 
 void app_loop()
@@ -188,7 +198,7 @@ void draw_scene()
 		//send unit number to FS
 		glUniform1i(glGetUniformLocation(shader.ID, "tex0"), 0);
 		// draw object
-		//TODO mesh_draw(mesh2_floor);
+		mesh_draw(mesh_floor);
 	}
 
 
