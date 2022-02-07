@@ -37,26 +37,81 @@
 // Transparentnost: okolo hráèe se budou pohybovat prùhledný pøekážky.
 // Threads: pozice oblièeje dává offset pozice hráèe na možnost míøení. 
 
-/* TODO:
-*
+/* TODO:	
+* realtime 2D raster processing = tracker (can be separate project), threads:
+*	
+* 3D GL (glew), shaders:
+*	
+* mouse (both axes), keyboard, fullscreen vs. windowed switching:
+*	
+* multiple moving 3D models, at leats one loaded from file:
+*	
+* textures:
+*	
+* lighting model, at least 2 lights (1x ambient + Nx something else):
+*	
+* correct transparency:
+*	
+* collisions:
+* 
+** EXTRAS
+** height map textured by height, proper player height coords
+** particles
+** scripting (useful)
+** audio
+* 
+* DONE:
 */
 
 // forward declarations
+void init_all();
+void reset_projection();
 
 
-
-
+// sem nic nedávat!!!
 
 //---------------------------------------------------------------------
 // MAIN
 //---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+	init_all(); // init all in init.cpp
+	
 
 
-	exit(EXIT_SUCCESS);
+	finalize(EXIT_SUCCESS);
 }
 
+void init_all()
+{
+	init();
+	reset_projection();
+}
+
+
+
+
+
+
+
+void reset_projection()
+{
+	float ratio = globals.width * 1.0f / globals.height;
+
+	glm::mat4 projectionMatrix = glm::perspective(
+		glm::radians(60.0f), // The vertical Field of View, in radians: the amount of "zoom". Think "camera lens". Usually between 90° (extra wide) and 30° (quite zoomed in)
+		ratio,			     // Aspect Ratio. Depends on the size of your window.
+		0.1f,                // Near clipping plane. Keep as big as possible, or you'll get precision issues.
+		20000.0f              // Far clipping plane. Keep as little as possible.
+	);
+
+	GLint currProgram;
+	glGetIntegerv(GL_CURRENT_PROGRAM, &currProgram);
+
+	// set projection for all shaders
+	glUniformMatrix4fv(glGetUniformLocation(currProgram, "uProj_m"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
+	
+}
 
 /*
 callbacks

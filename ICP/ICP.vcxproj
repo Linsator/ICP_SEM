@@ -163,6 +163,7 @@
     <ClCompile Include="init.cpp" />
     <ClCompile Include="lua_engine.cpp" />
     <ClCompile Include="lua_interface.cpp" />
+    <ClCompile Include="shaders.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="callbacks.h" />
@@ -171,6 +172,7 @@
     <ClInclude Include="init.h" />
     <ClInclude Include="lua_engine.h" />
     <ClInclude Include="lua_interface.h" />
+    <ClInclude Include="shaders.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
