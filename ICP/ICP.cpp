@@ -39,25 +39,25 @@
 
 /* TODO:
 * realtime 2D raster processing = tracker (can be separate project), threads:
-*	
-* 3D GL (glew), shaders:*	
-*	
+*
+* 3D GL (glew), shaders:*
+*
 * multiple moving 3D models, at leats one loaded from file:
-*	
+*
 * textures:
-*	
+*
 * lighting model, at least 2 lights (1x ambient + Nx something else):
-*	
+*
 * correct transparency:
-*	
+*
 * collisions:
-* 
+*
 ** EXTRAS
 ** height map textured by height, proper player height coords
 ** particles
 ** scripting (useful)
 ** audio
-* 
+*
 * DONE:
 * mouse (both axes), keyboard, fullscreen vs. windowed switching:
 */
@@ -80,7 +80,7 @@ void physics_step();
 int main(int argc, char** argv)
 {
 	init_all(); // init all in init.cpp
-	
+
 	app_loop();
 
 	finalize(EXIT_SUCCESS);
@@ -102,7 +102,7 @@ void app_loop()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Render here 
-		{ 
+		{
 			/* TODO camera part
 			if (new_frame) {
 				frame.copyTo(local_frame);
@@ -170,7 +170,7 @@ void reset_projection()
 		// set projection for all shaders
 		glUniformMatrix4fv(glGetUniformLocation(currProgram, "uProj_m"), 1, GL_FALSE, glm::value_ptr(projectionMatrix));
 	}
-	
+
 }
 
 void toFullscreen() {
@@ -256,11 +256,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 				globals.camera->movement_speed -= 1;
 			}
 			break;
-		/* TODO once drawing is added, this is used to disable printing of stats
-		case GLFW_KEY_F1:
-			stats = stats ? false : true; // switch state
-			break;
-		*/
+			/* TODO once drawing is added, this is used to disable printing of stats
+			case GLFW_KEY_F1:
+				stats = stats ? false : true; // switch state
+				break;
+			*/
 		default:
 			break;
 		}
