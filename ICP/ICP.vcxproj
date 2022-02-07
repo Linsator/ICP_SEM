@@ -164,6 +164,7 @@
     <ClCompile Include="lua_engine.cpp" />
     <ClCompile Include="lua_interface.cpp" />
     <ClCompile Include="mesh.cpp" />
+    <ClCompile Include="mesh_gen.cpp" />
     <ClCompile Include="OBJloader.cpp" />
     <ClCompile Include="shaders.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="lua_engine.h" />
     <ClInclude Include="lua_interface.h" />
     <ClInclude Include="mesh.h" />
+    <ClInclude Include="mesh_gen.h" />
     <ClInclude Include="OBJloader.h" />
     <ClInclude Include="shaders.h" />
     <ClInclude Include="texture.h" />
@@ -188,6 +190,9 @@
     <None Include="resources\shaders\toon.frag" />
     <None Include="resources\shaders\toon.vert" />
     <None Include="resources\shaders\toon_uni.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\placeholder.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
