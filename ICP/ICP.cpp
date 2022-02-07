@@ -87,7 +87,7 @@ void stat_tracking();
 
 //global variables
 shaders shader;
-
+bool stats = false;
 
 // sem nic nedávat!!!
 
@@ -163,7 +163,10 @@ void physics_step()
 
 void draw_scene()
 {
-	stat_tracking();
+	if (stats)
+	{
+		stat_tracking();
+	}
 	//
 	// DRAW
 	//
@@ -326,11 +329,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 				globals.avatar->movement_speed -= 1;
 			}
 			break;
-			/* TODO once drawing is added, this is used to disable printing of stats
 			case GLFW_KEY_F1:
 				stats = stats ? false : true; // switch state
 				break;
-			*/
+			
 		default:
 			break;
 		}
