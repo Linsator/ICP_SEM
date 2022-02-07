@@ -32,6 +32,13 @@ struct s_globals {
 	GLFWwindow* window;
 	int height;
 	int width;
+
+	// fullscreen/windowed
+	int posX;
+	int posY;
+	int prevH;
+	int prevW;
+
 	double app_start_time;
 
 	Avatar * camera;
