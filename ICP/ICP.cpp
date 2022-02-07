@@ -290,6 +290,7 @@ void fbsize_callback(GLFWwindow* window, int width, int height)
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	static bool f_screen;
 	if ((action == GLFW_PRESS) || (action == GLFW_REPEAT))
 	{
 		switch (key) {
@@ -297,10 +298,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			glfwSetWindowShouldClose(window, GL_TRUE);
 			break;
 		case GLFW_KEY_F:
-			toFullscreen();
+			f_screen = !f_screen;
+			if (f_screen)
+				toWindowed();
+			else
+				toFullscreen();
 			break;
 		case GLFW_KEY_G:
-			toWindowed();
+			// do nothing!
 			break;
 		case GLFW_KEY_W:
 			avatarMoveForward(*(globals.avatar));
