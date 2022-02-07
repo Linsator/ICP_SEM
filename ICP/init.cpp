@@ -4,17 +4,18 @@
 #include "callbacks.h"
 #include "shaders.h"
 
-void init(void)
+shaders init(void)
 {
 	init_glfw();
 	init_glew();
 	gl_print_info();
-	init_shader();
+	shaders ret = init_shader();
 	init_avatar();
 	
 	// i don't have camera
 	//init_camera();
 
+	return ret;
 }
 
 static void init_camera(void)
@@ -49,23 +50,24 @@ static void init_camera(void)
 
 
 void init_avatar() {
-	globals.camera = new Avatar();
+	globals.avatar = new Avatar();
 
-	globals.camera->position = glm::vec3(0, 10.0f, 0);
-	globals.camera->lookAt = glm::vec3(1.0f, 0.0f, 0.0f);
-	globals.camera->movement_speed = 1.0f;
-	globals.camera->mouse_sensitivity = 0.1f;
+	globals.avatar->position = glm::vec3(0, 10.0f, 0);
+	globals.avatar->lookAt = glm::vec3(1.0f, 0.0f, 0.0f);
+	globals.avatar->movement_speed = 1.0f;
+	globals.avatar->mouse_sensitivity = 0.1f;
 
 	//disable mouse
 	glfwSetInputMode(globals.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
-void init_shader()
+shaders init_shader()
 {
 	//shaders basic_shader = shaders("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	shaders basic_tex_shader = shaders("resources/shaders/basic_tex.vert", "resources/shaders/basic_tex.frag");
 	basic_tex_shader.activate();
 	globals.shader_ready = true;
+	return basic_tex_shader;
 }
 
 void init_glfw(void)

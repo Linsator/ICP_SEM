@@ -2,12 +2,12 @@
 
 #include "globals.h"
 
-void init(void);
+shaders init(void);
 
 void init_glfw(void);
 void init_glew(void);
 void gl_print_info(void);
-void init_shader(void);
+shaders init_shader(void);
 void init_avatar();
 void init_camera();
 
