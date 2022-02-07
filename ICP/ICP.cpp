@@ -188,7 +188,7 @@ void draw_scene()
 		//send unit number to FS
 		glUniform1i(glGetUniformLocation(shader.ID, "tex0"), 0);
 		// draw object
-		//TODO mesh2_draw(mesh2_floor);
+		//TODO mesh_draw(mesh2_floor);
 	}
 
 
