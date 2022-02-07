@@ -163,8 +163,10 @@
     <ClCompile Include="init.cpp" />
     <ClCompile Include="lua_engine.cpp" />
     <ClCompile Include="lua_interface.cpp" />
+    <ClCompile Include="mesh.cpp" />
     <ClCompile Include="OBJloader.cpp" />
     <ClCompile Include="shaders.cpp" />
+    <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="callbacks.h" />
@@ -173,8 +175,10 @@
     <ClInclude Include="init.h" />
     <ClInclude Include="lua_engine.h" />
     <ClInclude Include="lua_interface.h" />
+    <ClInclude Include="mesh.h" />
     <ClInclude Include="OBJloader.h" />
     <ClInclude Include="shaders.h" />
+    <ClInclude Include="texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\basic.frag" />
