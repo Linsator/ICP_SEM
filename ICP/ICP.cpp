@@ -40,9 +40,7 @@
 /* TODO:
 * realtime 2D raster processing = tracker (can be separate project), threads:
 *	
-* 3D GL (glew), shaders:
-*	
-* mouse (both axes), keyboard, fullscreen vs. windowed switching:
+* 3D GL (glew), shaders:*	
 *	
 * multiple moving 3D models, at leats one loaded from file:
 *	
@@ -61,6 +59,7 @@
 ** audio
 * 
 * DONE:
+* mouse (both axes), keyboard, fullscreen vs. windowed switching:
 */
 
 // forward declarations
