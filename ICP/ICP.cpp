@@ -45,23 +45,25 @@
 /* TODO:
 * realtime 2D raster processing = tracker (can be separate project), threads:
 *	Cam face tracking in separate thread
-*	set face coords as avatar offset
+*	set face coords as avatar offset, separate offset to not mess with jump
 *
 * multiple moving 3D models, at leats one loaded from file:
 *	Moving targets, Bow, Arrow, transparent obstacle
 *
 * textures:
 *	find textures
-*	update obj loader and mesh to load textures automatically
+*	update obj loader and mesh to load textures automatically?
 *
 * lighting model, at least 2 lights (1x ambient + Nx something else):
 *	Update shader to use lighning
 *	place lights into scene
 *
 * correct transparency:
+*	swithing glEnable(GL_CULL_FACE);
 *
 * collisions:
 *	Physics of arrow (movement and collision)
+*	Create/modify Class to encapsulate meshes and their position for collision (and drawing?)
 *
 ** EXTRAS
 ** height map textured by height, proper player height coords
@@ -190,7 +192,7 @@ void app_loop()
 
 void physics_step()
 {
-
+	
 }
 
 void draw_scene()
