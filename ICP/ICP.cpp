@@ -96,6 +96,7 @@ shaders shader;
 bool stats = false;
 mesh mesh_floor;
 mesh mesh_target;
+mesh mesh_transparent;
 unsigned int target_num = 1;
 
 // sem nic nedávat!!!
@@ -130,6 +131,9 @@ void init_all()
 	glEnable(GL_POLYGON_SMOOTH); //antialiasing
 	glEnable(GL_LINE_SMOOTH);
 
+	//transparency blending function
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	// ALL objects are non-transparent 
 	glEnable(GL_CULL_FACE);
 
@@ -139,8 +143,9 @@ void init_all()
 
 void create_mesh()
 {
-	mesh_floor = gen_mesh_floor("resources/placeholder.png", 1000);
 	mesh_target = gen_mesh_cube("resources/placeholder.png");
+	mesh_transparent = gen_mesh_floor("resources/transparent.png", 1);
+	mesh_floor = gen_mesh_floor("resources/placeholder.png", 1000);
 
 }
 
@@ -212,6 +217,8 @@ void draw_scene()
 	glm::mat4 mv_m = glm::lookAt(globals.avatar->position, globals.avatar->position + globals.avatar->lookAt, glm::vec3(0.0f, 1.0f, 0.0f));
 
 
+	// Draw all non-transparent -------------------------------------------------------------------------------------------------
+
 	// plane with texture
 	{
 		// activate shader with textures support
@@ -228,7 +235,8 @@ void draw_scene()
 	}
 
 	double phase_shift = (2 * glm::pi<float>())/ target_num;
-	for(int i = 0; i < target_num; i ++){
+	for(int i = 0; i < target_num; i ++)
+	{
 		
 		auto target = glm::translate(mv_m, glm::vec3( 50.0f, spin_radius + spin_radius * cos(t + phase_shift*i), spin_radius * sin(t + phase_shift*i)));
 		//set material 
@@ -247,8 +255,39 @@ void draw_scene()
 
 
 
+	//semi-transparent object, colour through Phong model -----------------------------------------------------------------------
+	glEnable(GL_BLEND);                         // enable blending
+	glDisable(GL_CULL_FACE);                    // no polygon removal
+	glDepthMask(GL_FALSE);                        // set Z to read-only
 
 
+	//draw transparent 
+	{
+
+		auto target = glm::translate(mv_m, glm::vec3(10.0f, 2.0f, 0));
+		target = glm::rotate(target, glm::pi<float>()/2, glm::vec3(0.0f, 0.0f, 1.0f));
+		//set material 
+		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
+		reset_projection();
+		//scale
+		target = glm::scale(target, glm::vec3(10.0f));
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(target));
+		//set texture unit
+		glActiveTexture(GL_TEXTURE0);
+		//send unit number to FS
+		glUniform1i(glGetUniformLocation(shader.ID, "tex0"), 0);
+		//draw
+		mesh_draw(mesh_transparent);
+	}
+
+	glDisable(GL_BLEND);
+	glEnable(GL_CULL_FACE);
+	glDepthMask(GL_TRUE);
+
+
+
+
+		
 }
 
 void stat_tracking()

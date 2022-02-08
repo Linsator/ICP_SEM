@@ -111,5 +111,8 @@
     <Image Include="resources\placeholder.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\transparent.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
