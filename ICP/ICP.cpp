@@ -94,6 +94,7 @@ void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum se
 //global variables
 shaders shader;
 bool stats = false;
+bool arrow_exists = false;
 mesh mesh_floor;
 mesh mesh_target;
 mesh mesh_transparent;
@@ -196,10 +197,14 @@ void app_loop()
 	}
 }
 
-void physics_step()
+void physics_step(/*glm::vec3 position*/)
 {
-	
-	
+	/*double v = 5.0;
+	double t = glfwGetTime();
+	double g = 9.81;
+	glm::vec3 new_position;
+
+	return new_position;*/
 }
 
 void draw_scene()
@@ -255,13 +260,14 @@ void draw_scene()
 		mesh_draw(mesh_target);
 	}
 
+	if (arrow_exists)
 	{
-		auto arrow = glm::translate(mv_m, glm::vec3(30.0f, 20.0f, 10.0f));
+		auto arrow = glm::translate(mv_m, glm::vec3(5.0, 2.0, 0.0));
 		//set material 
 		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
 		reset_projection();
 		//scale
-		arrow = glm::scale(arrow, glm::vec3(5.0f));
+		arrow = glm::scale(arrow, glm::vec3(1.0f));
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(arrow));
 		//set texture unit
 		glActiveTexture(GL_TEXTURE0);
@@ -305,6 +311,11 @@ void draw_scene()
 
 
 		
+}
+
+void shoot_arrow()
+{
+	arrow_exists = true;
 }
 
 void stat_tracking()
@@ -517,6 +528,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	if (button == GLFW_MOUSE_BUTTON_LEFT) {
 		if (action == GLFW_PRESS) {
 			//action
+			shoot_arrow();
 			std::cout << "Left mouse button pressed!" << std::endl;
 		}
 	}
