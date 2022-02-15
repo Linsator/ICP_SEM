@@ -4,6 +4,8 @@
 #include "callbacks.h"
 #include "shaders.h"
 
+void init_arrow(void);	// WHAT THE HECK? WHYYYYYYYYYYYYYYYY
+
 shaders init(void)
 {
 	init_glfw();
@@ -11,6 +13,7 @@ shaders init(void)
 	gl_print_info();
 	shaders ret = init_shader();
 	init_avatar();
+	init_arrow();
 	
 	// i don't have camera
 	//init_camera();
@@ -59,6 +62,13 @@ void init_avatar() {
 
 	//disable mouse
 	glfwSetInputMode(globals.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+void init_arrow() 
+{
+	globals.arrow = new Arrow();
+
+	globals.arrow->exists = false;
 }
 
 shaders init_shader()
