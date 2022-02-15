@@ -94,12 +94,12 @@ void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum se
 //global variables
 shaders shader;
 bool stats = false;
-bool arrow_exists = false;
 mesh mesh_floor;
 mesh mesh_target;
 mesh mesh_transparent;
 mesh mesh_arrow;
 unsigned int target_num = 1;
+float env_resistance_multplr = 1.0;
 
 // sem nic nedávat!!!
 
@@ -197,14 +197,35 @@ void app_loop()
 	}
 }
 
-void physics_step(/*glm::vec3 position*/)
+void physics_step()
 {
-	/*double v = 5.0;
-	double t = glfwGetTime();
-	double g = 9.81;
-	glm::vec3 new_position;
+	double t = glfwGetTime() / 1000.0;
+	float g = 9.81;
 
-	return new_position;*/
+	if (globals.arrow->exists)
+	{
+		float V0 = globals.arrow->speed;
+		float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(1.0, 0.0, 1.0)), glm::normalize(globals.arrow->direction)));
+		//float fi = glm::acos( (glm::length(glm::dot(globals.arrow->position, globals.arrow->direction))) / (glm::length(globals.arrow->position) * glm::length(globals.arrow->direction)) );
+		float theta = glm::acos(glm::dot(glm::normalize(glm::vec3(0.0, 0.0, 1.0)), glm::normalize(globals.arrow->direction)));
+		
+		/*if (glm::degrees(fi) > 90)
+			fi = fi - glm::pi<float>() / 2;
+		if (glm::degrees(fi) < -90)
+			fi = fi + glm::pi<float>() / 2;*/
+
+		float Vx = V0 * glm::sin(fi) * glm::sin(theta);
+		float x = Vx * t;
+
+		float Vy = V0 * glm::cos(fi);
+		float y = Vy * t - g * glm::pow(t, 2) / 2;
+
+		float Vz = V0 * glm::sin(fi) * glm::cos(theta);
+		float z = Vz * t;
+		
+		globals.arrow->position += glm::vec3(x, y, z);
+		globals.arrow->speed = globals.arrow->speed * env_resistance_multplr;
+	}
 }
 
 void draw_scene()
@@ -260,9 +281,9 @@ void draw_scene()
 		mesh_draw(mesh_target);
 	}
 
-	if (arrow_exists)
+	if (globals.arrow->exists)
 	{
-		auto arrow = glm::translate(mv_m, glm::vec3(5.0, 2.0, 0.0));
+		auto arrow = glm::translate(mv_m, globals.arrow->position);
 		//set material 
 		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
 		reset_projection();
@@ -313,10 +334,6 @@ void draw_scene()
 		
 }
 
-void shoot_arrow()
-{
-	arrow_exists = true;
-}
 
 void stat_tracking()
 {
@@ -528,7 +545,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	if (button == GLFW_MOUSE_BUTTON_LEFT) {
 		if (action == GLFW_PRESS) {
 			//action
-			shoot_arrow();
+			arrowShoot(*(globals.arrow), *(globals.avatar));
 			std::cout << "Left mouse button pressed!" << std::endl;
 		}
 	}
