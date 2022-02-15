@@ -29,3 +29,11 @@ Avatar avatarMoveDown(Avatar& avatar) {
 	avatar.position = glm::vec3(avatar.position.x, avatar.position.y - avatar.movement_speed, avatar.position.z);
 	return avatar;
 }
+
+Arrow arrowShoot(Arrow& arrow, Avatar& avatar) {
+	arrow.exists = true;
+	arrow.speed = 1;
+	arrow.position = avatar.position + avatar.lookAt;
+	arrow.direction = avatar.lookAt;
+	return arrow;
+}

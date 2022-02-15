@@ -27,6 +27,14 @@ typedef struct  Avatar {   // camera (player) info
 	float		movement_speed;
 } Avatar;
 
+typedef struct Arrow {
+	glm::vec3 position;
+	glm::vec3 direction;
+
+	float speed;
+	bool exists;
+} Arrow;
+
 
 struct s_globals {
 	GLFWwindow* window;
@@ -45,6 +53,8 @@ struct s_globals {
 
 	Avatar * avatar;
 
+	Arrow * arrow;
+
 	cv::VideoCapture capture;
 	lua_engine lua;
 };
@@ -59,3 +69,5 @@ Avatar avatarMoveUp(Avatar& avatar);
 Avatar avatarMoveDown(Avatar& avatar);
 
 Avatar avatarRotate(Avatar& avatar, const float yaw, const float pitch, const float roll);
+
+Arrow arrowShoot(Arrow& arrow, Avatar& avatar);
