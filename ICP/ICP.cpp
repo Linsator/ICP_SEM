@@ -97,6 +97,7 @@ bool stats = false;
 mesh mesh_floor;
 mesh mesh_target;
 mesh mesh_transparent;
+mesh mesh_arrow;
 unsigned int target_num = 1;
 
 // sem nic nedávat!!!
@@ -146,7 +147,7 @@ void create_mesh()
 	mesh_target = gen_mesh_cube("resources/placeholder.png");
 	mesh_transparent = gen_mesh_floor("resources/transparent.png", 1);
 	mesh_floor = gen_mesh_floor("resources/placeholder.png", 1000);
-
+	mesh_arrow = gen_mesh_cube("resources/arrow.png");
 }
 
 void app_loop()
@@ -197,6 +198,7 @@ void app_loop()
 
 void physics_step()
 {
+	
 	
 }
 
@@ -253,6 +255,21 @@ void draw_scene()
 		mesh_draw(mesh_target);
 	}
 
+	{
+		auto arrow = glm::translate(mv_m, glm::vec3(30.0f, 20.0f, 10.0f));
+		//set material 
+		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
+		reset_projection();
+		//scale
+		arrow = glm::scale(arrow, glm::vec3(5.0f));
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(arrow));
+		//set texture unit
+		glActiveTexture(GL_TEXTURE0);
+		//send unit number to FS
+		glUniform1i(glGetUniformLocation(shader.ID, "tex0"), 0);
+		//draw
+		mesh_draw(mesh_arrow);
+	}
 
 
 	//semi-transparent object, colour through Phong model -----------------------------------------------------------------------
