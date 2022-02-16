@@ -207,8 +207,8 @@ void physics_step()
 		double prev_t = globals.arrow->previous_time;
 		float V0 = globals.arrow->speed;
 
-		float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)), glm::normalize(globals.arrow->direction)));
 		//float fi = glm::acos((glm::length(glm::dot(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z), globals.arrow->direction))) / (glm::length(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)) * glm::length(globals.arrow->direction)));
+		float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)), glm::normalize(globals.arrow->direction)));
 		
 		if (globals.arrow->direction.y >= 0)
 			fi = glm::pi<float>() / 2 - fi;
@@ -296,12 +296,23 @@ void draw_scene()
 	if (globals.arrow->exists)
 	{
 		auto arrow = glm::translate(mv_m, globals.arrow->position);
-		// arrow = glm::rotate(arrow, glm::pi<float>() * (float)t, globals.arrow->direction);
+
+		//rotation face
+		float theta = glm::acos(glm::dot(glm::normalize(glm::vec3(0.0, 0.0, 1.0)), glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z))));
+		if (globals.arrow->direction.x < 0)
+			theta = -theta;
+		arrow = glm::rotate(arrow, theta, glm::vec3(0.0f, 1.0f, 0.0f));
+		//rotation physics
+		float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)), glm::normalize(globals.arrow->direction)));
+
+		if (globals.arrow->direction.y >= 0)
+			fi = - fi;
+		arrow = glm::rotate(arrow, fi, glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z));
 		//set material 
 		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
 		reset_projection();
 		//scale
-		arrow = glm::scale(arrow, glm::vec3(1.0f));
+		arrow = glm::scale(arrow, glm::vec3(0.2f, 0.2f, 1.0f));
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(arrow));
 		//set texture unit
 		glActiveTexture(GL_TEXTURE0);
