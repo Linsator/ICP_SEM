@@ -30,11 +30,6 @@ typedef struct  Avatar {   // camera (player) info
 typedef struct Arrow {
 	glm::vec3 position;
 	glm::vec3 direction;
-
-	// glm::vec3 previous_position;	// asi k prdu
-	double previous_time;
-
-	float speed;
 	bool exists;
 } Arrow;
 
