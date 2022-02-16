@@ -231,13 +231,9 @@ void physics_step()
 
 		float Vz = V0 * glm::sin(fi) * glm::cos(theta);
 		float z = Vz * delta_t;
-		
-		/*globals.arrow->previous_position = globals.arrow->position;
-		globals.arrow->position += glm::vec3(x, y, z);
-		globals.arrow->direction = globals.arrow->position - globals.arrow->previous_position;*/
 
 		globals.arrow->position += glm::vec3(x, y, z);
-		// globals.arrow->direction = glm::normalize(glm::vec3(x, y, z));
+		globals.arrow->direction = glm::normalize(glm::vec3(x, y, z));
 
 		globals.arrow->previous_time = t;
 		globals.arrow->speed = globals.arrow->speed * env_resistance_multplr;
