@@ -190,6 +190,7 @@ void app_loop()
 
 		//draw_scene(local_center_relative);
 		physics_step();
+		check_collision();
 		draw_scene();
 		// ...
 
@@ -237,6 +238,11 @@ void physics_step()
 	
 	}
 	prev_t = t;
+}
+
+void check_collision()
+{
+
 }
 
 void draw_scene()
