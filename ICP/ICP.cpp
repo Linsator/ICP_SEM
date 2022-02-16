@@ -304,13 +304,20 @@ void draw_scene()
 		arrow = glm::rotate(arrow, theta, glm::vec3(0.0f, 1.0f, 0.0f));
 		
 		//rotation to match physics
-		float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)), glm::normalize(globals.arrow->direction)));
+		//float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)), glm::normalize(globals.arrow->direction)));
 
-		if (globals.arrow->direction.y < 0)
-			fi = - fi;
-		arrow = glm::rotate(arrow, fi, glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), glm::normalize(globals.arrow->direction)));
-		// arrow = glm::rotate(arrow, fi, glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)));
-		
+		//if (globals.arrow->direction.y < 0)
+		//{
+		//	fi = - fi;
+		//}
+		//arrow = glm::rotate(arrow, fi, glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), glm::normalize(globals.arrow->direction)));
+		//
+		/*else if (globals.arrow->direction.z < 0)
+		{
+			fi = fi;
+			arrow = glm::rotate(arrow, fi, glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), glm::normalize(globals.arrow->direction)));
+
+		}*/
 		//set material 
 		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
 		reset_projection();
