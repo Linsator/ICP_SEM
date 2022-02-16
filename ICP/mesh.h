@@ -16,6 +16,7 @@
 struct vertex {
 	glm::vec3 position;
 	glm::vec2 texcoord;
+	glm::vec3 normals;
 };
 
 // classes necessary for mesh construction
@@ -94,7 +95,7 @@ public:
 		mesh_VAO.connect_attrib(mesh_VBO, 0, 3, GL_FLOAT, sizeof(vertex), (void*)(0));
 		if (textured)
 			mesh_VAO.connect_attrib(mesh_VBO, 1, 2, GL_FLOAT, sizeof(vertex), (void*)(0 + offsetof(vertex, texcoord)));
-
+		mesh_VAO.connect_attrib(mesh_VBO, 2, 3, GL_FLOAT, sizeof(vertex), (void*)(0 + offsetof(vertex, normals)));
 		mesh_VAO.unbind();
 		mesh_VBO.unbind();
 		mesh_EBO.unbind();
