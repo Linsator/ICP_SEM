@@ -199,18 +199,29 @@ void app_loop()
 
 void physics_step()
 {
-	double prev_t = globals.arrow->previous_time;
 	double t = glfwGetTime();
 	float g = 9.81;
-	float delta_t = t - prev_t;
 
 	if (globals.arrow->exists)
 	{
+		double prev_t = globals.arrow->previous_time;
 		float V0 = globals.arrow->speed;
-		float fi = glm::pi<float>() / 2  - glm::acos(glm::dot(glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)), glm::normalize(globals.arrow->direction)));
-		//float fi = glm::acos( (glm::length(glm::dot(globals.arrow->position, globals.arrow->direction))) / (glm::length(globals.arrow->position) * glm::length(globals.arrow->direction)) );
-		float theta = glm::acos(glm::dot(glm::normalize(glm::vec3(0.0, 0.0, 1.0)), glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)));
+
+		float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)), glm::normalize(globals.arrow->direction)));
+		//float fi = glm::acos((glm::length(glm::dot(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z), globals.arrow->direction))) / (glm::length(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)) * glm::length(globals.arrow->direction)));
 		
+		if (globals.arrow->direction.y >= 0)
+			fi = glm::pi<float>() / 2 - fi;
+		else
+			fi = glm::pi<float>() / 2 + fi;
+		
+		
+		float theta = glm::acos(glm::dot(glm::normalize(glm::vec3(0.0, 0.0, 1.0)), glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z))));
+		
+		if (globals.arrow->direction.x < 0)
+			theta = -theta;
+
+		float delta_t = t - prev_t;
 
 		float Vx = V0 * glm::sin(fi) * glm::sin(theta);
 		float x = Vx * delta_t;
@@ -221,8 +232,14 @@ void physics_step()
 		float Vz = V0 * glm::sin(fi) * glm::cos(theta);
 		float z = Vz * delta_t;
 		
-		globals.arrow->previous_time = t;
+		/*globals.arrow->previous_position = globals.arrow->position;
 		globals.arrow->position += glm::vec3(x, y, z);
+		globals.arrow->direction = globals.arrow->position - globals.arrow->previous_position;*/
+
+		globals.arrow->position += glm::vec3(x, y, z);
+		// globals.arrow->direction = glm::normalize(glm::vec3(x, y, z));
+
+		globals.arrow->previous_time = t;
 		globals.arrow->speed = globals.arrow->speed * env_resistance_multplr;
 	}
 }
@@ -283,6 +300,7 @@ void draw_scene()
 	if (globals.arrow->exists)
 	{
 		auto arrow = glm::translate(mv_m, globals.arrow->position);
+		// arrow = glm::rotate(arrow, glm::pi<float>() * (float)t, globals.arrow->direction);
 		//set material 
 		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
 		reset_projection();
@@ -440,8 +458,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 				toFullscreen();
 			f_screen = !f_screen;
 			break;
-		case GLFW_KEY_G:
-			// do nothing!
+		case GLFW_KEY_B:
+			arrowDestroy(*(globals.arrow));
 			break;
 		case GLFW_KEY_W:
 			avatarMoveForward(*(globals.avatar));

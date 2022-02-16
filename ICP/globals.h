@@ -31,9 +31,11 @@ typedef struct Arrow {
 	glm::vec3 position;
 	glm::vec3 direction;
 
+	glm::vec3 previous_position;	// asi k prdu
+	double previous_time;
+
 	float speed;
 	bool exists;
-	double previous_time;
 } Arrow;
 
 
@@ -72,3 +74,4 @@ Avatar avatarMoveDown(Avatar& avatar);
 Avatar avatarRotate(Avatar& avatar, const float yaw, const float pitch, const float roll);
 
 Arrow arrowShoot(Arrow& arrow, Avatar& avatar);
+Arrow arrowDestroy(Arrow& arrow);
