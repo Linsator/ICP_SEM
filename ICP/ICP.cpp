@@ -55,8 +55,7 @@
 *	update obj loader and mesh to load textures automatically?
 *
 * lighting model, at least 2 lights (1x ambient + Nx something else):
-*	Update shader to use lighning
-*	place lights into scene
+*	Mostly done, just fix positions of lights
 *
 * correct transparency:
 *	swithing glEnable(GL_CULL_FACE);
