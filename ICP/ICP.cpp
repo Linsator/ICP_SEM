@@ -297,27 +297,34 @@ void draw_scene()
 	{
 		auto arrow = glm::translate(mv_m, globals.arrow->position);
 
-		//rotation face
+		//rotation facing right direction
 		float theta = glm::acos(glm::dot(glm::normalize(glm::vec3(0.0, 0.0, 1.0)), glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z))));
 		if (globals.arrow->direction.x < 0)
 			theta = -theta;
 		arrow = glm::rotate(arrow, theta, glm::vec3(0.0f, 1.0f, 0.0f));
-		//rotation physics
+		
+		//rotation to match physics
 		float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)), glm::normalize(globals.arrow->direction)));
 
-		if (globals.arrow->direction.y >= 0)
+		if (globals.arrow->direction.y < 0)
 			fi = - fi;
-		arrow = glm::rotate(arrow, fi, glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z));
+		arrow = glm::rotate(arrow, fi, glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), glm::normalize(globals.arrow->direction)));
+		// arrow = glm::rotate(arrow, fi, glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)));
+		
 		//set material 
 		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
 		reset_projection();
+		
 		//scale
 		arrow = glm::scale(arrow, glm::vec3(0.2f, 0.2f, 1.0f));
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(arrow));
+		
 		//set texture unit
 		glActiveTexture(GL_TEXTURE0);
+		
 		//send unit number to FS
 		glUniform1i(glGetUniformLocation(shader.ID, "tex0"), 0);
+		
 		//draw
 		mesh_draw(mesh_arrow);
 	}
@@ -570,13 +577,13 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 		if (action == GLFW_PRESS) {
 			//action
 			arrowShoot(*(globals.arrow), *(globals.avatar));
-			std::cout << "Left mouse button pressed!" << std::endl;
+			// std::cout << "Left mouse button pressed!" << std::endl;
 		}
 	}
 	if (button == GLFW_MOUSE_BUTTON_RIGHT) {
 		if (action == GLFW_PRESS) {
 			//action
-			std::cout << "Right mouse button pressed!" << std::endl;
+			// std::cout << "Right mouse button pressed!" << std::endl;
 		}
 	}
 }
