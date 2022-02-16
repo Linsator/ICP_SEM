@@ -33,6 +33,7 @@ typedef struct Arrow {
 
 	float speed;
 	bool exists;
+	double previous_time;
 } Arrow;
 
 

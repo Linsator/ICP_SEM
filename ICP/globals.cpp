@@ -32,6 +32,7 @@ Avatar avatarMoveDown(Avatar& avatar) {
 
 Arrow arrowShoot(Arrow& arrow, Avatar& avatar) {
 	arrow.exists = true;
+	arrow.previous_time = glfwGetTime();
 	arrow.speed = 1;
 	arrow.position = avatar.position + avatar.lookAt;
 	arrow.direction = avatar.lookAt;
