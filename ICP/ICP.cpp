@@ -91,6 +91,16 @@ void stat_tracking();
 void create_mesh();
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 
+struct Light {
+	// Gets the color of the light from the main function
+	glm::vec4 lightColor;
+	// Gets the position of the light from the main function
+	glm::vec3 lightPos;
+	float intenA;
+	float intenB;
+	float ambient;
+};
+
 //global variables
 shaders shader;
 bool stats = false;
@@ -209,7 +219,7 @@ void draw_scene()
 	//
 	// DRAW
 	//
-	double speed_multiplier = 4.0;
+	double speed_multiplier = 1.0;
 	float spin_radius = 10.0f;
 	double t = speed_multiplier * glfwGetTime();
 
@@ -217,15 +227,84 @@ void draw_scene()
 	glm::mat4 mv_m = glm::lookAt(globals.avatar->position, globals.avatar->position + globals.avatar->lookAt, glm::vec3(0.0f, 1.0f, 0.0f));
 
 
+	glm::vec3 lightPos = { 20.0f,5.0f,10.0f };
+	glm::vec4 lightColor = { 1.0f,1.0f,1.0f, 1.0f }; // blue so it's visible
+
+	Light lights[4];
+	// direct
+	lights[0] = { glm::vec4(0.3f,0.3f,0.3f,1.0f), glm::vec3(1.0f,1.0f,0.0f), 1.0f,1.0f,0.2f };
+
+	// point
+	lights[1] = { glm::vec4(0.5f,0.0f,0.0f,1.0f), glm::vec3(20.0f,40.0f,0.0f), 1.5f,0.7f,0.0f };
+	lights[2] = { glm::vec4(0.0f,0.5f,0.0f,1.0f), glm::vec3(20.0f,0.0f,40.0f), 1.5f,0.7f,0.0f };
+	lights[3] = { glm::vec4(0.0f,0.0f,0.5f,1.0f), glm::vec3(20.0f,0.0f,-40.0f), 1.5f,0.7f,0.0f };
+
+
+	shader.activate();
+
+	// Set Light
+	{
+		// Direct light
+		glUniform4fv(glGetUniformLocation(shader.ID, "lights[0].lightColor"), 1, glm::value_ptr(lights[0].lightColor));
+		glUniform3fv(glGetUniformLocation(shader.ID, "lights[0].lightPos"), 1, glm::value_ptr(lights[0].lightPos));
+		glUniform1f(glGetUniformLocation(shader.ID, "lights[0].intenA"), lights[0].intenA);
+		glUniform1f(glGetUniformLocation(shader.ID, "lights[0].intenB"), lights[0].intenB);
+		glUniform1f(glGetUniformLocation(shader.ID, "lights[0].ambient"), lights[0].ambient);
+
+		// point light 1
+		glUniform4fv(glGetUniformLocation(shader.ID, "lights[1].lightColor"), 1, glm::value_ptr(lights[1].lightColor));
+		glUniform3fv(glGetUniformLocation(shader.ID, "lights[1].lightPos"), 1, glm::value_ptr(lights[1].lightPos));
+		glUniform1f(glGetUniformLocation(shader.ID, "lights[1].intenA"), lights[1].intenA);
+		glUniform1f(glGetUniformLocation(shader.ID, "lights[1].intenB"), lights[1].intenB);
+		glUniform1f(glGetUniformLocation(shader.ID, "lights[1].ambient"), lights[1].ambient);
+		auto l1 = glm::translate(mv_m, lights[1].lightPos);
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(l1));
+		mesh_draw(mesh_target);
+
+		// point light 2
+		glUniform4fv(glGetUniformLocation(shader.ID, "lights[2].lightColor"), 1, glm::value_ptr(lights[2].lightColor));
+		glUniform3fv(glGetUniformLocation(shader.ID, "lights[2].lightPos"), 1, glm::value_ptr(lights[2].lightPos));
+		glUniform1f(glGetUniformLocation(shader.ID, "lights[2].intenA"), lights[2].intenA);
+		glUniform1f(glGetUniformLocation(shader.ID, "lights[2].intenB"), lights[2].intenB);
+		glUniform1f(glGetUniformLocation(shader.ID, "lights[2].ambient"), lights[2].ambient);
+		auto l2 = glm::translate(mv_m, lights[2].lightPos);
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(l2));
+		mesh_draw(mesh_target);
+
+		// point light 3
+		glUniform4fv(glGetUniformLocation(shader.ID, "lights[3].lightColor"), 1, glm::value_ptr(lights[3].lightColor));
+		glUniform3fv(glGetUniformLocation(shader.ID, "lights[3].lightPos"), 1, glm::value_ptr(lights[3].lightPos));
+		glUniform1f(glGetUniformLocation(shader.ID, "lights[3].intenA"), lights[3].intenA);
+		glUniform1f(glGetUniformLocation(shader.ID, "lights[3].intenB"), lights[3].intenB);
+		glUniform1f(glGetUniformLocation(shader.ID, "lights[3].ambient"), lights[3].ambient);
+		auto l3 = glm::translate(mv_m, lights[3].lightPos);
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(l3));
+		mesh_draw(mesh_target);
+		
+		// Gets the Texture Units from the main function
+		// Diffuse texture
+		//uniform sampler2D tex0;
+		glActiveTexture(GL_TEXTURE0);
+		glUniform1i(glGetUniformLocation(shader.ID, "tex0"), 0);
+		// Gets the position of the camera from the main function
+		//uniform vec3 camPos;
+		glUniform3fv(glGetUniformLocation(shader.ID, "camPos"), 1, glm::value_ptr(globals.avatar->position));
+
+		
+	}
+
+
 	// Draw all non-transparent -------------------------------------------------------------------------------------------------
 
 	// plane with texture
 	{
 		// activate shader with textures support
-		shader.activate();
+		
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(mv_m));
+
 		// set diffuse material
 		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
+
 		//set texture unit
 		glActiveTexture(GL_TEXTURE0);
 		//send unit number to FS
@@ -234,13 +313,16 @@ void draw_scene()
 		mesh_draw(mesh_floor);
 	}
 
+	// draw targets
 	double phase_shift = (2 * glm::pi<float>())/ target_num;
 	for(int i = 0; i < target_num; i ++)
 	{
 		
 		auto target = glm::translate(mv_m, glm::vec3( 50.0f, spin_radius + spin_radius * cos(t + phase_shift*i), spin_radius * sin(t + phase_shift*i)));
+
 		//set material 
 		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
+
 		reset_projection();
 		//scale
 		target = glm::scale(target, glm::vec3(10.0f));
@@ -264,10 +346,10 @@ void draw_scene()
 	//draw transparent 
 	{
 
-		auto target = glm::translate(mv_m, glm::vec3(10.0f, 2.0f, 0));
+		auto target = glm::translate(mv_m, glm::vec3(8.0f, 2.0f, 0));
 		target = glm::rotate(target, glm::pi<float>()/2, glm::vec3(0.0f, 0.0f, 1.0f));
 		//set material 
-		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
+		//glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
 		reset_projection();
 		//scale
 		target = glm::scale(target, glm::vec3(10.0f));
