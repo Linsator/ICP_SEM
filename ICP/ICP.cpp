@@ -108,7 +108,6 @@ mesh mesh_target;
 mesh mesh_transparent;
 mesh mesh_arrow;
 unsigned int target_num = 1;
-float env_resistance_multplr = 1.0;
 
 // sem nic nedávat!!!
 
@@ -211,6 +210,7 @@ void physics_step()
 	double t = glfwGetTime();
 	static double prev_t = t;
 	glm::vec3 g = {0, -9.81, 0};
+	glm::vec3 drag = {1.25, 1.0, 1.25};
 
 	for (int i = 0; i < globals.arrows.size(); i++)
 	{
@@ -219,13 +219,14 @@ void physics_step()
 		float delta_t = t - prev_t;
 
 		// compute new velocity = apply gravity to direction and slowdown
-		a->direction = a->direction + g * delta_t;
+		a->direction += g * delta_t;
+		a->direction -= drag * delta_t;
 
 		//compute new position
-		a->position = a->position + a->direction * delta_t;
+		a->position += a->direction * delta_t;
 
 		// update lifeTime
-		a->lifeTime = a->lifeTime - delta_t;
+		a->lifeTime -= delta_t;
 
 		// if arrow runs out of time remove it from vector of arrows and delete from memory
 		if (a->lifeTime < 0)
