@@ -209,44 +209,21 @@ void app_loop()
 void physics_step()
 {
 	double t = glfwGetTime();
-	float g = 9.81;
+	static double prev_t = t;
+	glm::vec3 g = {0, -9.81, 0};
 
 	if (globals.arrow->exists)
 	{
-		double prev_t = globals.arrow->previous_time;
-		float V0 = globals.arrow->speed;
-
-		//float fi = glm::acos((glm::length(glm::dot(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z), globals.arrow->direction))) / (glm::length(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)) * glm::length(globals.arrow->direction)));
-		float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)), glm::normalize(globals.arrow->direction)));
-		
-		if (globals.arrow->direction.y >= 0)
-			fi = glm::pi<float>() / 2 - fi;
-		else
-			fi = glm::pi<float>() / 2 + fi;
-		
-		
-		float theta = glm::acos(glm::dot(glm::normalize(glm::vec3(0.0, 0.0, 1.0)), glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z))));
-		
-		if (globals.arrow->direction.x < 0)
-			theta = -theta;
-
+		// compute how long between steps
 		float delta_t = t - prev_t;
 
-		float Vx = V0 * glm::sin(fi) * glm::sin(theta);
-		float x = Vx * delta_t;
+		// compute new velocity = apply gravity to direction and slowdown
+		globals.arrow->direction = globals.arrow->direction + g * delta_t;
 
-		float Vy = V0 * glm::cos(fi);
-		float y = Vy * delta_t - g * glm::pow(delta_t, 2) / 2;
-
-		float Vz = V0 * glm::sin(fi) * glm::cos(theta);
-		float z = Vz * delta_t;
-
-		globals.arrow->position += glm::vec3(x, y, z);
-		globals.arrow->direction = glm::normalize(glm::vec3(x, y, z));
-
-		globals.arrow->previous_time = t;
-		globals.arrow->speed = globals.arrow->speed * env_resistance_multplr;
+		//compute new position
+		globals.arrow->position = globals.arrow->position + globals.arrow->direction * delta_t;
 	}
+	prev_t = t;
 }
 
 void draw_scene()
@@ -383,15 +360,15 @@ void draw_scene()
 		if (globals.arrow->direction.x < 0)
 			theta = -theta;
 		arrow = glm::rotate(arrow, theta, glm::vec3(0.0f, 1.0f, 0.0f));
-		
-		//rotation to match physics
-		//float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)), glm::normalize(globals.arrow->direction)));
 
-		//if (globals.arrow->direction.y < 0)
-		//{
-		//	fi = - fi;
-		//}
-		//arrow = glm::rotate(arrow, fi, glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), glm::normalize(globals.arrow->direction)));
+		//rotation to match physics
+		float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)), glm::normalize(globals.arrow->direction)));
+
+		if (globals.arrow->direction.y < 0)
+		{
+			fi = - fi;
+		}
+		arrow = glm::rotate(arrow, fi, glm::vec3(-1.0f, 0.0f, 0.0f));
 		//
 		/*else if (globals.arrow->direction.z < 0)
 		{
