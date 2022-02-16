@@ -34,7 +34,7 @@ Arrow arrowShoot(Arrow& arrow, Avatar& avatar) {
 	arrow.exists = true;
 	arrow.previous_time = glfwGetTime();
 	arrow.speed = 10;
-	arrow.previous_position = avatar.position;
+	// arrow.previous_position = avatar.position;
 	arrow.position = avatar.position + avatar.lookAt;
 	arrow.direction = avatar.lookAt;
 	return arrow;
