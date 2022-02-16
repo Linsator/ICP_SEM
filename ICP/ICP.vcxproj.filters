@@ -48,6 +48,9 @@
     <ClCompile Include="mesh_gen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Audio_reader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="globals.h">
@@ -83,6 +86,9 @@
     <ClInclude Include="mesh_gen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Audio_reader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\basic.frag">
@@ -106,6 +112,7 @@
     <None Include="resources\shaders\toon_uni.frag">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="resources\placeholder.png">
