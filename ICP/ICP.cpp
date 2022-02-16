@@ -199,30 +199,29 @@ void app_loop()
 
 void physics_step()
 {
-	double t = glfwGetTime() / 1000.0;
+	double prev_t = globals.arrow->previous_time;
+	double t = glfwGetTime();
 	float g = 9.81;
+	float delta_t = t - prev_t;
 
 	if (globals.arrow->exists)
 	{
 		float V0 = globals.arrow->speed;
-		float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(1.0, 0.0, 1.0)), glm::normalize(globals.arrow->direction)));
+		float fi = glm::pi<float>() / 2  - glm::acos(glm::dot(glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)), glm::normalize(globals.arrow->direction)));
 		//float fi = glm::acos( (glm::length(glm::dot(globals.arrow->position, globals.arrow->direction))) / (glm::length(globals.arrow->position) * glm::length(globals.arrow->direction)) );
-		float theta = glm::acos(glm::dot(glm::normalize(glm::vec3(0.0, 0.0, 1.0)), glm::normalize(globals.arrow->direction)));
+		float theta = glm::acos(glm::dot(glm::normalize(glm::vec3(0.0, 0.0, 1.0)), glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)));
 		
-		/*if (glm::degrees(fi) > 90)
-			fi = fi - glm::pi<float>() / 2;
-		if (glm::degrees(fi) < -90)
-			fi = fi + glm::pi<float>() / 2;*/
 
 		float Vx = V0 * glm::sin(fi) * glm::sin(theta);
-		float x = Vx * t;
+		float x = Vx * delta_t;
 
 		float Vy = V0 * glm::cos(fi);
-		float y = Vy * t - g * glm::pow(t, 2) / 2;
+		float y = Vy * delta_t - g * glm::pow(delta_t, 2) / 2;
 
 		float Vz = V0 * glm::sin(fi) * glm::cos(theta);
-		float z = Vz * t;
+		float z = Vz * delta_t;
 		
+		globals.arrow->previous_time = t;
 		globals.arrow->position += glm::vec3(x, y, z);
 		globals.arrow->speed = globals.arrow->speed * env_resistance_multplr;
 	}
