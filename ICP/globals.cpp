@@ -30,16 +30,16 @@ Avatar avatarMoveDown(Avatar& avatar) {
 	return avatar;
 }
 
-Arrow arrowShoot(Arrow& arrow, Avatar& avatar) {
-	float speed = 10;
-	arrow.exists = true;
-	arrow.position = avatar.position + avatar.lookAt;
-	arrow.direction = speed * normalize(avatar.lookAt);
-	return arrow;
+void arrowShoot() {
+	Arrow *newArrow = new Arrow();
+	float speed = 50;
+	newArrow->lifeTime = 10; // in seconds
+	newArrow->position = globals.avatar->position + 5.0f * globals.avatar->lookAt;
+	newArrow->direction = speed * normalize(globals.avatar->lookAt);
+	globals.arrows.push_back(newArrow);
 }
 
 Arrow arrowDestroy(Arrow& arrow) {
-	arrow.exists = false;
 	//arrow.speed = 0;
 	return arrow;
 }

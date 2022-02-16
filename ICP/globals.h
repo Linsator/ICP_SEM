@@ -30,7 +30,7 @@ typedef struct  Avatar {   // camera (player) info
 typedef struct Arrow {
 	glm::vec3 position;
 	glm::vec3 direction;
-	bool exists;
+	float lifeTime;
 } Arrow;
 
 
@@ -51,7 +51,7 @@ struct s_globals {
 
 	Avatar * avatar;
 
-	Arrow * arrow;
+	std::vector <Arrow*> arrows;
 
 	cv::VideoCapture capture;
 	lua_engine lua;
@@ -68,5 +68,5 @@ Avatar avatarMoveDown(Avatar& avatar);
 
 Avatar avatarRotate(Avatar& avatar, const float yaw, const float pitch, const float roll);
 
-Arrow arrowShoot(Arrow& arrow, Avatar& avatar);
+void arrowShoot();
 Arrow arrowDestroy(Arrow& arrow);

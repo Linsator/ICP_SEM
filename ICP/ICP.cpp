@@ -212,16 +212,28 @@ void physics_step()
 	static double prev_t = t;
 	glm::vec3 g = {0, -9.81, 0};
 
-	if (globals.arrow->exists)
+	for (int i = 0; i < globals.arrows.size(); i++)
 	{
+		Arrow* a = globals.arrows[i];
 		// compute how long between steps
 		float delta_t = t - prev_t;
 
 		// compute new velocity = apply gravity to direction and slowdown
-		globals.arrow->direction = globals.arrow->direction + g * delta_t;
+		a->direction = a->direction + g * delta_t;
 
 		//compute new position
-		globals.arrow->position = globals.arrow->position + globals.arrow->direction * delta_t;
+		a->position = a->position + a->direction * delta_t;
+
+		// update lifeTime
+		a->lifeTime = a->lifeTime - delta_t;
+
+		// if arrow runs out of time remove it from vector of arrows and delete from memory
+		if (a->lifeTime < 0)
+		{
+			globals.arrows.erase(globals.arrows.begin() + i);
+			delete a;
+		}
+	
 	}
 	prev_t = t;
 }
@@ -235,7 +247,7 @@ void draw_scene()
 	//
 	// DRAW
 	//
-	double speed_multiplier = 1.0;
+	double speed_multiplier = 2.0;
 	float spin_radius = 10.0f;
 	double t = speed_multiplier * glfwGetTime();
 
@@ -248,12 +260,12 @@ void draw_scene()
 
 	Light lights[4];
 	// direct
-	lights[0] = { glm::vec4(0.3f,0.3f,0.3f,1.0f), glm::vec3(1.0f,1.0f,0.0f), 1.0f,1.0f,0.2f };
+	lights[0] = { glm::vec4(0.5f,0.5f,0.5f,1.0f), glm::vec3(1.0f,1.0f,0.0f), 1.0f,1.0f,0.2f };
 
 	// point
-	lights[1] = { glm::vec4(0.5f,0.0f,0.0f,1.0f), glm::vec3(20.0f,40.0f,0.0f), 1.5f,0.7f,0.0f };
-	lights[2] = { glm::vec4(0.0f,0.5f,0.0f,1.0f), glm::vec3(20.0f,0.0f,40.0f), 1.5f,0.7f,0.0f };
-	lights[3] = { glm::vec4(0.0f,0.0f,0.5f,1.0f), glm::vec3(20.0f,0.0f,-40.0f), 1.5f,0.7f,0.0f };
+	lights[1] = { glm::vec4(1.0f,0.0f,0.0f,1.0f), glm::vec3(20.0f,40.0f,0.0f), 1.5f,0.7f,0.0f };
+	lights[2] = { glm::vec4(0.0f,1.0f,0.0f,1.0f), glm::vec3(20.0f,0.0f,40.0f), 1.5f,0.7f,0.0f };
+	lights[3] = { glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec3(20.0f,0.0f,-40.0f), 1.5f,0.7f,0.0f };
 
 
 	shader.activate();
@@ -351,20 +363,24 @@ void draw_scene()
 		mesh_draw(mesh_target);
 	}
 
-	if (globals.arrow->exists)
+	for (int i = 0; i < globals.arrows.size(); i++)
 	{
-		auto arrow = glm::translate(mv_m, globals.arrow->position);
+		Arrow *a = globals.arrows[i];
+		auto arrow = glm::translate(mv_m, a->position);
+
+		// make it bigger
+		arrow = glm::scale(arrow, glm::vec3(10.0f));
 
 		//rotation facing right direction
-		float theta = glm::acos(glm::dot(glm::normalize(glm::vec3(0.0, 0.0, 1.0)), glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z))));
-		if (globals.arrow->direction.x < 0)
+		float theta = glm::acos(glm::dot(glm::normalize(glm::vec3(0.0, 0.0, 1.0)), glm::normalize(glm::vec3(a->direction.x, 0.0, a->direction.z))));
+		if (a->direction.x < 0)
 			theta = -theta;
 		arrow = glm::rotate(arrow, theta, glm::vec3(0.0f, 1.0f, 0.0f));
 
 		//rotation to match physics
-		float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(globals.arrow->direction.x, 0.0, globals.arrow->direction.z)), glm::normalize(globals.arrow->direction)));
+		float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(a->direction.x, 0.0, a->direction.z)), glm::normalize(a->direction)));
 
-		if (globals.arrow->direction.y < 0)
+		if (a->direction.y < 0)
 		{
 			fi = - fi;
 		}
@@ -538,7 +554,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			f_screen = !f_screen;
 			break;
 		case GLFW_KEY_B:
-			arrowDestroy(*(globals.arrow));
+			globals.arrows.clear();
 			break;
 		case GLFW_KEY_W:
 			avatarMoveForward(*(globals.avatar));
@@ -641,7 +657,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	if (button == GLFW_MOUSE_BUTTON_LEFT) {
 		if (action == GLFW_PRESS) {
 			//action
-			arrowShoot(*(globals.arrow), *(globals.avatar));
+			arrowShoot();
 			// std::cout << "Left mouse button pressed!" << std::endl;
 		}
 	}
