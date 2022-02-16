@@ -77,32 +77,32 @@ mesh gen_mesh_cube(std::string tex_path)
 	cv::flip(image, image, 0);
 
 	std::vector<vertex> vertices = {
-	// +z face
-	{ glm::vec3(-0.5f, 0.0f, 0.5f),glm::vec2(0.0,0.0), glm::vec3(0,0,1.0f)},
-	{ glm::vec3(0.5f, 0.0f, 0.5f),glm::vec2(1.0,0.0), glm::vec3(0,0,1.0f)},
-	{ glm::vec3(0.5f, 1.0f, 0.5f),glm::vec2(1.0,1.0), glm::vec3(0,0,1.0f)},
-	{ glm::vec3(-0.5f, 1.0f, 0.5f),glm::vec2(0.0, 1.0), glm::vec3(0,0,1.0f)},
-	// -z face
-	{ glm::vec3(-0.5f, 1.0f, -0.5f),glm::vec2(0.0, 0.0), glm::vec3(0,0,-1.0f)},
-	{ glm::vec3(0.5f, 1.0f, -0.5f),glm::vec2(1.0, 0.0), glm::vec3(0,0,-1.0f)}, 
-	{ glm::vec3(0.5f, 0.0f, -0.5f),glm::vec2(1.0, 1.0), glm::vec3(0,0,-1.0f)},
-	{ glm::vec3(-0.5f, 0.0f, -0.5f),glm::vec2(0.0, 1.0), glm::vec3(0,0,-1.0f)},
 	// +x face
-	{ glm::vec3(0.5f, 0.0f, 0.5f),glm::vec2(0.0, 0.0), glm::vec3(1.0f,0,0)},
-	{ glm::vec3(0.5f, 0.0f, -0.5f),glm::vec2(1.0, 0.0), glm::vec3(1.0f,0,0)},
-	{ glm::vec3(0.5f, 1.0f, -0.5f),glm::vec2(1.0, 1.0), glm::vec3(1.0f,0,0)},
-	{ glm::vec3(0.5f, 1.0f, 0.5f),glm::vec2(0.0, 1.0), glm::vec3(1.0f,0,0)},
+	{ glm::vec3(-0.5f, 0.0f, 0.5f),glm::vec2(0.0,0.0), glm::vec3(1.0f,0,0)},
+	{ glm::vec3(0.5f, 0.0f, 0.5f),glm::vec2(1.0,0.0), glm::vec3(1.0f,0,0)},
+	{ glm::vec3(0.5f, 1.0f, 0.5f),glm::vec2(1.0,1.0), glm::vec3(1.0f,0,0)},
+	{ glm::vec3(-0.5f, 1.0f, 0.5f),glm::vec2(0.0, 1.0), glm::vec3(1.0f,0,0)},
 	// -x face
-	{ glm::vec3(-0.5f, 0.0f, -0.5f),glm::vec2(0.0, 0.0), glm::vec3(-1.0f,0,0)},
-	{ glm::vec3(-0.5f, 0.0f, 0.5f),glm::vec2(1.0, 0.0), glm::vec3(-1.0f,0,0)},
-	{ glm::vec3(-0.5f, 1.0f, 0.5f),glm::vec2(1.0, 1.0), glm::vec3(-1.0f,0,0)},
-	{ glm::vec3(-0.5f, 1.0f, -0.5f),glm::vec2(0.0, 1.0), glm::vec3(-1.0f,0,0)},
-	// +y face
+	{ glm::vec3(-0.5f, 1.0f, -0.5f),glm::vec2(0.0, 0.0), glm::vec3(-1.0f,0,0)},
+	{ glm::vec3(0.5f, 1.0f, -0.5f),glm::vec2(1.0, 0.0), glm::vec3(-1.0f,0,0)}, 
+	{ glm::vec3(0.5f, 0.0f, -0.5f),glm::vec2(1.0, 1.0), glm::vec3(-1.0f,0,0)},
+	{ glm::vec3(-0.5f, 0.0f, -0.5f),glm::vec2(0.0, 1.0), glm::vec3(-1.0f,0,0)},
+	// -z face
+	{ glm::vec3(0.5f, 0.0f, 0.5f),glm::vec2(0.0, 0.0), glm::vec3(0,0,-1.0f)},
+	{ glm::vec3(0.5f, 0.0f, -0.5f),glm::vec2(1.0, 0.0), glm::vec3(0,0,-1.0f)},
+	{ glm::vec3(0.5f, 1.0f, -0.5f),glm::vec2(1.0, 1.0), glm::vec3(0,0,-1.0f)},
+	{ glm::vec3(0.5f, 1.0f, 0.5f),glm::vec2(0.0, 1.0), glm::vec3(0,0,-1.0f)},
+	// +z face
+	{ glm::vec3(-0.5f, 0.0f, -0.5f),glm::vec2(0.0, 0.0), glm::vec3(0,0,1.0f)},
+	{ glm::vec3(-0.5f, 0.0f, 0.5f),glm::vec2(1.0, 0.0), glm::vec3(0,0,1.0f)},
+	{ glm::vec3(-0.5f, 1.0f, 0.5f),glm::vec2(1.0, 1.0), glm::vec3(0,0,1.0f)},
+	{ glm::vec3(-0.5f, 1.0f, -0.5f),glm::vec2(0.0, 1.0), glm::vec3(0,0,1.0f)},
+	// -y face
 	{ glm::vec3(-0.5f, 1.0f, 0.5f),glm::vec2(0.0, 1.0), glm::vec3(0,1.0f,0)},
 	{ glm::vec3(0.5f, 1.0f, 0.5f),glm::vec2(1.0,1.0), glm::vec3(0,1.0f,0)},
 	{ glm::vec3(0.5f, 1.0f, -0.5f),glm::vec2(1.0, 0.0), glm::vec3(0,1.0f,0)},
 	{ glm::vec3(-0.5f, 1.0f, -0.5f),glm::vec2(0.0, 0.0), glm::vec3(0,1.0f,0)},
-	// -y face
+	// +y face
 	{ glm::vec3(-0.5f, 0.0f, -0.5f),glm::vec2(0.0, 1.0), glm::vec3(0,-1.0f,0)},
 	{ glm::vec3(0.5f, 0.0f, -0.5f),glm::vec2(1.0, 1.0), glm::vec3(0,-1.0f,0)},
 	{ glm::vec3(0.5f, 0.0f, 0.5f),glm::vec2(1.0,0.0), glm::vec3(0,-1.0f,0)},
