@@ -169,6 +169,7 @@ void create_mesh()
 	cv::Mat hmap = cv::imread(hm_file, cv::IMREAD_GRAYSCALE);
 
 	mesh_floor = HeightMap(hmap, 10, "resources/terrain.png"); //image, step size
+	globals.heightMap = hmap;
 	
 }
 
@@ -200,6 +201,7 @@ void app_loop()
 			}
 			*/
 		}
+
 
 		//draw_scene(local_center_relative);
 		physics_step();
@@ -261,7 +263,9 @@ void check_collision()
 		glm::vec3 a_xyzPoint0Pos = glm::vec3(a->position.x + a->bBox_shift.x - a->bBox_scale.x / 2, a->position.y + a->bBox_shift.y, a->position.z + a->bBox_shift.z - a->bBox_scale.z / 2);
 
 		//collision arrows with ground
-		if (a_xyzPoint0Pos.y <= 0)
+		int offset = globals.heightMap.cols / 2;
+		int heightMapY = globals.heightMap.at<uchar>(cv::Point(round(a_xyzPoint0Pos.x) + offset, round(a_xyzPoint0Pos.z) + offset));
+		if(a_xyzPoint0Pos.y <= heightMapY)
 			a->canMove = false;
 
 		// collision arrows with targets

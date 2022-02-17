@@ -80,6 +80,8 @@ struct s_globals {
 
 	cv::VideoCapture capture;
 	lua_engine lua;
+
+	cv::Mat heightMap;
 };
 
 extern s_globals globals;
