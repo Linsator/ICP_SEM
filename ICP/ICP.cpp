@@ -49,9 +49,6 @@
 *	set face coords as avatar offset, separate offset to not mess with jump
 *
 *
-* lighting model, at least 2 lights (1x ambient + Nx something else):
-*	Mostly done, just fix positions of lights
-*
 * correct transparency:
 *	swithing glEnable(GL_CULL_FACE);
 *
@@ -69,6 +66,8 @@
 *	cool sound when hit centre
 *
 * DONE:
+* lighting model, at least 2 lights (1x ambient + Nx something else):
+*	Mostly done, just fix positions of lights
 * mouse (both axes), keyboard, fullscreen vs. windowed switching:
 * 3D GL (glew), shaders:*
 * multiple moving 3D models, at leats one loaded from file:
