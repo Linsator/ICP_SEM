@@ -80,6 +80,11 @@
 ** height map textured by height, proper player height coords
 */
 
+// magic to use dedicated GPU instead of integrated one
+extern "C" {
+	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+}
+
 // forward declarations
 void init_all();
 void reset_projection();
