@@ -124,6 +124,9 @@
     <Image Include="resources\ArrowTex.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="resources\target.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="resources\models\arrowv3.obj">

@@ -155,7 +155,7 @@ void init_all()
 
 void create_mesh()
 {
-	mesh_target = gen_mesh_cube("resources/placeholder.png");
+	mesh_target = gen_mesh_cube("resources/target.png");
 	mesh_transparent = gen_mesh_floor("resources/transparent.png", 1);
 	mesh_floor = gen_mesh_floor("resources/justGray.png", 1000);
 	//mesh_arrow = gen_mesh_cube("resources/arrow.png");

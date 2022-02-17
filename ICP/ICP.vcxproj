@@ -197,6 +197,7 @@
   <ItemGroup>
     <Image Include="resources\ArrowTex.png" />
     <Image Include="resources\placeholder.png" />
+    <Image Include="resources\target.png" />
     <Image Include="resources\transparent.png" />
   </ItemGroup>
   <ItemGroup>
