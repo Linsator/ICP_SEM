@@ -91,7 +91,7 @@ void check_collision();
 void resolve_target_arrow_collision(Target*, int, Arrow*, int);
 void resolve_transparent_arrow_collision(Transparent*, int, Arrow*, int);
 void create_particles(Arrow*, int);
-void physics_step(glm::vec2 facePos);
+void physics_step();
 void stat_tracking();
 void create_mesh();
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
@@ -197,6 +197,7 @@ void app_loop()
 				facePos.y = 1.0f + -1.0f * facePos.y;
 
 				std::cout << "Face at x:" << facePos.x << ", y:" << facePos.y << std::endl;
+				globals.avatar->position.y += facePos.y;
 			}
 			{
 				// show image using GL, simple method, direct pixel copy
@@ -208,7 +209,7 @@ void app_loop()
 
 
 		//draw_scene(local_center_relative);
-		physics_step(facePos);
+		physics_step();
 		check_collision();
 		draw_scene();
 		// ...
@@ -297,7 +298,7 @@ float random(float min, float max)
 	return min + (float)rand() / ((float)RAND_MAX / (max - min));
 }
 
-void physics_step(glm::vec2 facePos)
+void physics_step()
 {
 	double t = glfwGetTime();
 	const float DECREMENT = 0.95f;
@@ -367,7 +368,6 @@ void physics_step(glm::vec2 facePos)
 
 void check_collision()
 {
-	//nothing yet
 	for (int i = 0; i < globals.arrows.size(); i++)
 	{
 		Arrow* a = globals.arrows[i];
