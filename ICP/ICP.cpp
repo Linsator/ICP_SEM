@@ -163,14 +163,7 @@ void create_mesh()
 	//mesh_floor = gen_mesh_floor("resources/justGray.png", 1000);
 	//mesh_arrow = gen_mesh_cube("resources/arrow.png");
 	mesh_arrow = loadOBJ("resources/models/arrowv3.obj", "resources/ArrowTex.png");
-
-	
-	// height map
-	std::string hm_file("resources/heights.png");
-	cv::Mat hmap = cv::imread(hm_file, cv::IMREAD_GRAYSCALE);
-
-	mesh_floor = HeightMap(hmap, 10, "resources/terrain.png"); //image, step size
-	globals.heightMap = hmap;
+	mesh_floor = HeightMap(globals.heightMap, 10, "resources/terrain.png"); //image, step size
 	
 }
 
@@ -466,10 +459,6 @@ void draw_scene()
 	for(int i = 0; i < globals.targets.size(); i ++)
 	{
 		Target* tar = globals.targets[i];
-
-		double t = tar->speed * glfwGetTime();		
-		tar->position = glm::vec3(50.0f, tar->radius + tar->radius * cos(t + phase_shift * i), tar->radius * sin(t + phase_shift * i));
-
 		auto target = glm::translate(mv_m, tar->position);
 
 		//set material 

@@ -11,12 +11,21 @@ shaders init(void)
 	init_glew();
 	gl_print_info();
 	shaders ret = init_shader();
+	init_height_map();
 	init_avatar();
 	
 	// i don't have camera
 	//init_camera();
 
 	return ret;
+}
+
+void init_height_map()
+{
+	// height map
+	std::string hm_file("resources/heights.png");
+	cv::Mat hmap = cv::imread(hm_file, cv::IMREAD_GRAYSCALE);
+	globals.heightMap = hmap;
 }
 
 static void init_camera(void)
@@ -52,8 +61,9 @@ static void init_camera(void)
 
 void init_avatar() {
 	globals.avatar = new Avatar();
-
+	globals.avatar->height = 10.0f;
 	globals.avatar->position = glm::vec3(0, 10.0f, 0);
+	globals.avatar->position.y = getHeightAt(globals.avatar->position.x, globals.avatar->position.z) + globals.avatar->height;
 	globals.avatar->lookAt = glm::vec3(1.0f, 0.0f, 0.0f);
 	globals.avatar->movement_speed = 1.0f;
 	globals.avatar->mouse_sensitivity = 0.1f;
