@@ -162,7 +162,7 @@ void create_mesh()
 	mesh_target = gen_mesh_cube("resources/target.png");
 	mesh_transparent = gen_mesh_floor("resources/transparent.png", 1);
 	//mesh_floor = gen_mesh_floor("resources/justGray.png", 1000);
-	mesh_particles = gen_mesh_cube("resources/arrow.png");
+	mesh_particles = gen_mesh_cube("resources/justGray.png");
 	mesh_arrow = loadOBJ("resources/models/arrowv3.obj", "resources/ArrowTex.png");
 	mesh_floor = HeightMap(globals.heightMap, 10, "resources/terrain.png"); //image, step size
 	
