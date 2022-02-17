@@ -39,7 +39,21 @@ void arrowShoot() {
 	globals.arrows.push_back(newArrow);
 }
 
-Arrow arrowDestroy(Arrow& arrow) {
-	//arrow.speed = 0;
-	return arrow;
+void arrowDestroy(Arrow* arrow, int at) {
+	globals.arrows.erase(globals.arrows.begin() + at);
+	delete arrow;
+}
+
+void targetAdd() {
+	Target* newTarget = new Target();
+	newTarget->speed = 2;
+	newTarget->radius = 10;
+	newTarget->position = glm::vec3(0.0);
+	newTarget->direction = glm::normalize(globals.avatar->lookAt);
+	globals.targets.push_back(newTarget);
+}
+
+void targetDestroy(Target* target, int at) {
+	globals.targets.erase(globals.targets.begin() + at);
+	delete target;
 }
