@@ -116,4 +116,6 @@ void transparentDestroy(Transparent* transparent, int at);
 void transparentDestroy(Transparent* transparent, int at);
 
 void particleAdd(Arrow* arrow);
+void particleDestroy(Particle* particle, int at);
+
 uchar getHeightAt(float x, float z);

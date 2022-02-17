@@ -86,6 +86,11 @@ void particleAdd(Arrow* arrow) {
 	globals.particles.push_back(newParticle);
 }
 
+void particleDestroy(Particle* particle, int at) {
+	globals.particles.erase(globals.particles.begin() + at);
+	delete particle;
+}
+
 uchar getHeightAt(float x, float z) {
 	int offset = globals.heightMap.cols / 2;
 	return globals.heightMap.at<uchar>(cv::Point(round(x) + offset, round(z) + offset));

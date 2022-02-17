@@ -285,6 +285,9 @@ void physics_step()
 			particle->speed.y += (-9.8f) * delta_t;
 		}
 		particle->lifeTime -= delta_t;
+
+		if (particle->lifeTime < 0)
+			particleDestroy(particle, i);
 	}
 
 	prev_t = t;
