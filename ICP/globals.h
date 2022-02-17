@@ -30,6 +30,7 @@ typedef struct  Avatar {   // camera (player) info
 typedef struct Target {
 	glm::vec3 position;
 	glm::vec3 direction;
+	glm::vec3 scale;
 
 	float radius;
 	float speed;
@@ -38,8 +39,13 @@ typedef struct Target {
 typedef struct Arrow {
 	glm::vec3 position;
 	glm::vec3 direction;
+	glm::vec3 scale;
+
+	glm::vec3 bBox_shift;
+	glm::vec3 bBox_scale;
 
 	float lifeTime;
+	bool canMove;
 } Arrow;
 
 typedef struct Transparent {

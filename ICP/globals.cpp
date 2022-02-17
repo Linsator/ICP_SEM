@@ -33,9 +33,13 @@ Avatar avatarMoveDown(Avatar& avatar) {
 void arrowShoot() {
 	Arrow *newArrow = new Arrow();
 	float speed = 50;
+	newArrow->canMove = true;
 	newArrow->lifeTime = 10; // in seconds
 	newArrow->position = globals.avatar->position + 5.0f * globals.avatar->lookAt;
 	newArrow->direction = speed * normalize(globals.avatar->lookAt);
+	newArrow->scale = glm::vec3(2.0f, 2.0f, 1.0f);
+	newArrow->bBox_shift = glm::vec3(0.0, -0.25, 2.75);
+	newArrow->bBox_scale = glm::vec3(0.5f);
 	globals.arrows.push_back(newArrow);
 }
 
@@ -48,6 +52,7 @@ void targetAdd() {
 	Target* newTarget = new Target();
 	newTarget->speed = 2;
 	newTarget->radius = 10;
+	newTarget->scale = glm::vec3(10.0f);
 	newTarget->position = glm::vec3(0.0);
 	newTarget->direction = glm::normalize(globals.avatar->lookAt);
 	globals.targets.push_back(newTarget);

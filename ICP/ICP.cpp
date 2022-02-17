@@ -87,6 +87,7 @@ void toWindowed();
 void app_loop();
 void draw_scene();
 void check_collision();
+void resolve_target_arrow_collision(Target* target, int tar_idx, Arrow* arrow, int arr_idx);
 void physics_step();
 void stat_tracking();
 void create_mesh();
@@ -221,12 +222,15 @@ void physics_step()
 		// compute how long between steps
 		float delta_t = t - prev_t;
 
-		// compute new velocity = apply gravity to direction and slowdown
-		a->direction += g * delta_t;
-		a->direction -= drag * delta_t;
+		if (a->canMove)
+		{
+			// compute new velocity = apply gravity to direction and slowdown
+			a->direction += g * delta_t;
+			a->direction -= drag * delta_t;
 
-		//compute new position
-		a->position += a->direction * delta_t;
+			//compute new position
+			a->position += a->direction * delta_t;
+		}
 
 		// update lifeTime
 		a->lifeTime -= delta_t;
@@ -241,6 +245,43 @@ void physics_step()
 void check_collision()
 {
 	//nothing yet
+	for (int i = 0; i < globals.arrows.size(); i++)
+	{
+		Arrow* a = globals.arrows[i];
+		glm::vec3 a_xyzPoint0Pos = glm::vec3(a->position.x + a->bBox_shift.x - a->bBox_scale.x / 2, a->position.y + a->bBox_shift.y, a->position.z + a->bBox_shift.z - a->bBox_scale.z / 2);
+
+		//collision arrows with ground
+		if (a_xyzPoint0Pos.y <= 0)
+			a->canMove = false;
+
+		// collision arrows with targets
+		for (int j = 0; j < globals.targets.size(); j++)
+		{
+			Target* tar = globals.targets[j];
+			glm::vec3 tar_xyzPoint0Pos = glm::vec3(tar->position.x - tar->scale.x / 2, tar->position.y, tar->position.z - tar->scale.z / 2);
+			
+			glm::bvec3 collision = glm::bvec3(false);
+			// collision x-axis
+			collision.x = a_xyzPoint0Pos.x + a->bBox_scale.x >= tar_xyzPoint0Pos.x
+				&& tar->position.x + tar->scale.x / 2 >= a_xyzPoint0Pos.x;
+			// collision y-axis
+			collision.y = a_xyzPoint0Pos.y + a->bBox_scale.y >= tar_xyzPoint0Pos.y
+				&& tar->position.y + tar->scale.y / 2 >= a_xyzPoint0Pos.y;
+			// collision z-axis
+			collision.z = a_xyzPoint0Pos.z + a->bBox_scale.z >= tar_xyzPoint0Pos.z
+				&& tar->position.z + tar->scale.z / 2 >= a_xyzPoint0Pos.z;
+			// collision only if all axis collides
+			if (collision.x && collision.y && collision.z)
+				resolve_target_arrow_collision(tar, j, a, i);
+		}
+	}
+}
+
+void resolve_target_arrow_collision(Target* target, int tar_idx, Arrow* arrow, int arr_idx)
+{
+	arrowDestroy(arrow, arr_idx);
+	//do particles
+	targetDestroy(target, tar_idx);
 }
 
 void draw_scene()
@@ -359,7 +400,7 @@ void draw_scene()
 
 		reset_projection();
 		//scale
-		target = glm::scale(target, glm::vec3(10.0f));
+		target = glm::scale(target, tar->scale);
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(target));
 		//set texture unit
 		glActiveTexture(GL_TEXTURE0);
@@ -387,18 +428,15 @@ void draw_scene()
 			fi = - fi;
 		arrow = glm::rotate(arrow, fi, glm::vec3(-1.0f, 0.0f, 0.0f));
 		
-		/*else if (globals.arrow->direction.z < 0)
-		{
-			fi = fi;
-			arrow = glm::rotate(arrow, fi, glm::cross(glm::vec3(0.0f, 1.0f, 0.0f), glm::normalize(globals.arrow->direction)));
-
-		}*/
+		// auto b_box = glm::translate(arrow, a->bBox_shift);
+		// b_box = glm::scale(b_box, a->bBox_scale);
+		
 		//set material 
 		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
 		reset_projection();
 		
 		//scale
-		arrow = glm::scale(arrow, glm::vec3(2.0f, 2.0f, 1.0f));
+		arrow = glm::scale(arrow, a->scale);
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(arrow));
 		
 		//set texture unit
@@ -409,6 +447,9 @@ void draw_scene()
 		
 		//draw
 		mesh_draw(mesh_arrow);
+
+		// glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(b_box));
+		// mesh_draw(mesh_target);
 	}
 
 
