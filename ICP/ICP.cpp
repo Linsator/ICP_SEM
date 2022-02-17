@@ -374,9 +374,6 @@ void draw_scene()
 		Arrow *a = globals.arrows[i];
 		auto arrow = glm::translate(mv_m, a->position);
 
-		// make it bigger
-		arrow = glm::scale(arrow, glm::vec3(10.0f));
-
 		//rotation facing right direction
 		float theta = glm::acos(glm::dot(glm::normalize(glm::vec3(0.0, 0.0, 1.0)), glm::normalize(glm::vec3(a->direction.x, 0.0, a->direction.z))));
 		if (a->direction.x < 0)
@@ -389,7 +386,7 @@ void draw_scene()
 		if (a->direction.y < 0)
 			fi = - fi;
 		arrow = glm::rotate(arrow, fi, glm::vec3(-1.0f, 0.0f, 0.0f));
-		//
+		
 		/*else if (globals.arrow->direction.z < 0)
 		{
 			fi = fi;
