@@ -87,8 +87,9 @@ void toWindowed();
 void app_loop();
 void draw_scene();
 void check_collision();
-void resolve_target_arrow_collision(Target* target, int tar_idx, Arrow* arrow, int arr_idx);
-void resolve_transparent_arrow_collision(Transparent* transparent, int trans_idx, Arrow* arrow, int arr_idx);
+void resolve_target_arrow_collision(Target*, int, Arrow*, int);
+void resolve_transparent_arrow_collision(Transparent*, int, Arrow*, int);
+void create_particles(Arrow*, int);
 void physics_step();
 void stat_tracking();
 void create_mesh();
@@ -113,6 +114,7 @@ mesh mesh_target;
 mesh mesh_transparent;
 mesh mesh_arrow;
 mesh mesh_height_map;
+mesh mesh_particles;
 
 // sem nic nedávat!!!
 
@@ -161,7 +163,7 @@ void create_mesh()
 	mesh_target = gen_mesh_cube("resources/target.png");
 	mesh_transparent = gen_mesh_floor("resources/transparent.png", 1);
 	//mesh_floor = gen_mesh_floor("resources/justGray.png", 1000);
-	//mesh_arrow = gen_mesh_cube("resources/arrow.png");
+	mesh_particles = gen_mesh_cube("resources/arrow.png");
 	mesh_arrow = loadOBJ("resources/models/arrowv3.obj", "resources/ArrowTex.png");
 	mesh_floor = HeightMap(globals.heightMap, 10, "resources/terrain.png"); //image, step size
 	
@@ -231,6 +233,7 @@ void physics_step()
 	// compute how long between steps
 	float delta_t = t - prev_t;
 
+	// arrow physics
 	for (int i = 0; i < globals.arrows.size(); i++)
 	{
 		Arrow* a = globals.arrows[i];
@@ -253,11 +256,13 @@ void physics_step()
 			arrowDestroy(a, i);
 	}
 
-	for (auto particle = globals.particles.begin(); particle != globals.particles.end(); ++particle)
+	// particles physics
+	for (int i = 0; i < globals.particles.size(); i++)
 	{
+		Particle* particle = globals.particles[i];
+
 		if (glm::length(particle->speed) < 1.0) //speed vector length
 		{
-			particle->position = { 0.0f, 100.0f, 0.0f };
 			particle->speed.x = random(-10, 10);
 			particle->speed.y = random(-30, 30);
 			particle->speed.z = random(-10, 10);
@@ -270,8 +275,12 @@ void physics_step()
 				particle->speed.y *= -DECREMENT;
 				particle->speed.z *= DECREMENT;
 			}
-			particle->speed.y += 0.1f * (-9.8f) * delta_t;
+			particle->speed.y += (-9.8f) * delta_t;
 		}
+		particle->lifeTime -= delta_t;
+
+		if (particle->lifeTime < 0)
+			particleDestroy(particle, i);
 	}
 
 	prev_t = t;
@@ -287,9 +296,7 @@ void check_collision()
 
 		//collision arrows with ground
 		if (a_xyzPoint0Pos.y <= getHeightAt(a_xyzPoint0Pos.x, a_xyzPoint0Pos.z))
-		{
 			a->canMove = false;
-		}
 
 		// collision arrows with targets
 		for (int j = 0; j < globals.targets.size(); j++)
@@ -338,8 +345,12 @@ void check_collision()
 void resolve_target_arrow_collision(Target* target, int tar_idx, Arrow* arrow, int arr_idx)
 {
 	arrowDestroy(arrow, arr_idx);
-	//do particles
-	targetDestroy(target, tar_idx);
+	if (arrow->canMove)
+	{
+		targetDestroy(target, tar_idx);
+		create_particles(arrow, random(5, 15));
+	}
+	
 }
 
 void resolve_transparent_arrow_collision(Transparent* transparent, int trans_idx, Arrow* arrow, int arr_idx)
@@ -349,9 +360,20 @@ void resolve_transparent_arrow_collision(Transparent* transparent, int trans_idx
 	if (transparent->life == 0)
 	{
 		transparentDestroy(transparent, trans_idx);
+		create_particles(arrow, random(30, 50));
 	}
-	//else
-	//	arrow->canMove = false;
+	else
+	{
+		arrow->canMove = false;
+		arrow->position -= arrow->direction;
+		create_particles(arrow, random(5, 15));
+	}
+}
+
+void create_particles(Arrow* arrow, int count)
+{
+	for (int i = 0; i < count; i++)
+		particleAdd(arrow);
 }
 
 
@@ -516,6 +538,28 @@ void draw_scene()
 
 		// glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(b_box));
 		// mesh_draw(mesh_target);
+	}
+
+	// draw particles
+	for (int i = 0; i < globals.particles.size(); i++)
+	{
+		Particle* particle = globals.particles[i];
+
+		auto p = glm::translate(mv_m, particle->position);
+
+		//set material 
+		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
+
+		reset_projection();
+		//scale
+		p = glm::scale(p, particle->scale);
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(p));
+		//set texture unit
+		glActiveTexture(GL_TEXTURE0);
+		//send unit number to FS
+		glUniform1i(glGetUniformLocation(shader.ID, "tex0"), 0);
+		//draw
+		mesh_draw(mesh_particles);
 	}
 
 

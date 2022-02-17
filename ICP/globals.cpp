@@ -83,6 +83,20 @@ void transparentDestroy(Transparent* transparent, int at) {
 	delete transparent;
 }
 
+void particleAdd(Arrow* arrow) {
+	Particle* newParticle = new Particle();
+	newParticle->lifeTime = 1;
+	newParticle->scale = glm::vec3(0.2f);
+	newParticle->position = arrow->position + arrow->bBox_shift;
+	newParticle->speed = glm::vec3(10.0f);
+	globals.particles.push_back(newParticle);
+}
+
+void particleDestroy(Particle* particle, int at) {
+	globals.particles.erase(globals.particles.begin() + at);
+	delete particle;
+}
+
 uchar getHeightAt(float x, float z) {
 	int offset = globals.heightMap.cols / 2;
 	return globals.heightMap.at<uchar>(cv::Point(round(x) + offset, round(z) + offset));
