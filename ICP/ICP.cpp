@@ -420,9 +420,12 @@ void draw_scene()
 
 
 	//draw transparent 
+	for (int i = 0; i < globals.transparents.size(); i++)
 	{
+		Transparent* transp = globals.transparents[i];
+		transp->position = glm::vec3(8.0f, 2.0f, 0);
 
-		auto target = glm::translate(mv_m, glm::vec3(8.0f, 2.0f, 0));
+		auto target = glm::translate(mv_m, transp->position);
 		target = glm::rotate(target, glm::pi<float>()/2, glm::vec3(0.0f, 0.0f, 1.0f));
 		//set material 
 		//glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
@@ -573,8 +576,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_E:
 			avatarMoveUp(*(globals.avatar));
 			break;
+		case GLFW_KEY_T:
+			transparentAdd();
+			break;
 		case GLFW_KEY_M:
 			targetAdd();
+			break;
 		case GLFW_KEY_SPACE:
 			// jump pls
 			break;

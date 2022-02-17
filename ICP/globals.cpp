@@ -57,3 +57,9 @@ void targetDestroy(Target* target, int at) {
 	globals.targets.erase(globals.targets.begin() + at);
 	delete target;
 }
+
+void transparentAdd() {
+	Transparent* newTransparent = new Transparent();
+	newTransparent->position = glm::vec3(0.0);
+	globals.transparents.push_back(newTransparent);
+}
