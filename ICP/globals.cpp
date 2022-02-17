@@ -76,3 +76,8 @@ void transparentDestroy(Transparent* transparent, int at) {
 	globals.transparents.erase(globals.transparents.begin() + at);
 	delete transparent;
 }
+
+uchar getHeightAt(float x, float z) {
+	int offset = globals.heightMap.cols / 2;
+	return globals.heightMap.at<uchar>(cv::Point(round(x) + offset, round(z) + offset));
+}

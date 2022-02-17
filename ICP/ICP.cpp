@@ -293,10 +293,10 @@ void check_collision()
 		glm::vec3 a_xyzPoint0Pos = glm::vec3(a->position.x + a->bBox_shift.x - a->bBox_scale.x / 2, a->position.y + a->bBox_shift.y, a->position.z + a->bBox_shift.z - a->bBox_scale.z / 2);
 
 		//collision arrows with ground
-		int offset = globals.heightMap.cols / 2;
-		int heightMapY = globals.heightMap.at<uchar>(cv::Point(round(a_xyzPoint0Pos.x) + offset, round(a_xyzPoint0Pos.z) + offset));
-		if(a_xyzPoint0Pos.y <= heightMapY)
+		if (a_xyzPoint0Pos.y <= getHeightAt(a_xyzPoint0Pos.x, a_xyzPoint0Pos.z))
+		{
 			a->canMove = false;
+		}
 
 		// collision arrows with targets
 		for (int j = 0; j < globals.targets.size(); j++)

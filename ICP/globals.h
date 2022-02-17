@@ -110,3 +110,5 @@ void targetDestroy(Target* target, int at);
 
 void transparentAdd();
 void transparentDestroy(Transparent* transparent, int at);
+
+uchar getHeightAt(float x, float z);
