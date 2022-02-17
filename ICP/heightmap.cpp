@@ -13,15 +13,15 @@
 //return bottom left ST of subtexture
 glm::vec2 get_subtex_st(const int x, const int y)
 {
-	return glm::vec2(x * 1.0f / 4.0f, y * 1.0f / 4.0f);
+	return glm::vec2(x * 1.0f / 2.0f, y * 1.0f / 2.0f);
 }
 
 glm::vec2 get_subtex_by_height(float height)
 {
-	if (height > 0.2)
-		return get_subtex_st(1, 0); //rock
-	else if (height > 0.1)
-		return get_subtex_st(0, 1); //soil
+	if (height > 0.5)
+		return get_subtex_st(0, 1); //rock
+	else if (height > 0.2)
+		return get_subtex_st(1, 0); //soil
 	else 
 		return get_subtex_st(0, 0); //grass
 }
@@ -82,9 +82,9 @@ mesh HeightMap(cv::Mat& hmap, unsigned int mesh_step_size, const char * texPath)
 
 			// Get texture coords in vertices, bottom left of geometry == bottom left of texture
 			glm::vec2 tc0 = get_subtex_by_height(max_h);
-			glm::vec2 tc1 = tc0 + glm::vec2(1.0f / 4, 0.0f);			//add offset for bottom right corner
-			glm::vec2 tc2 = tc0 + glm::vec2(1.0f / 4, 1.0f / 4);  //add offset for top right corner
-			glm::vec2 tc3 = tc0 + glm::vec2(0.0f, 1.0f / 4);       //add offset for bottom leftcorner
+			glm::vec2 tc1 = tc0 + glm::vec2(1.0f / 2, 0.0f);			//add offset for bottom right corner
+			glm::vec2 tc2 = tc0 + glm::vec2(1.0f / 2, 1.0f / 2);  //add offset for top right corner
+			glm::vec2 tc3 = tc0 + glm::vec2(0.0f, 1.0f / 2);       //add offset for bottom leftcorner
 			
 			//place vertices and ST to mesh
 			//   3-----2
