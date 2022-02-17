@@ -73,7 +73,6 @@ void init_avatar() {
 
 shaders init_shader()
 {
-	//shaders basic_shader = shaders("resources/shaders/basic.vert", "resources/shaders/basic.frag");
 	shaders basic_tex_shader = shaders("resources/shaders/basic_tex.vert", "resources/shaders/basic_tex.frag");
 	basic_tex_shader.activate();
 	globals.shader_ready = true;
@@ -101,7 +100,6 @@ void init_glfw(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // only new functions
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE); // only old functions (for old tutorials etc.)
 
 	glfwWindowHint(GLFW_SAMPLES, 4); // 4x antialiasing
 	globals.window = glfwCreateWindow(800, 600, "OpenGL context", NULL, NULL);
