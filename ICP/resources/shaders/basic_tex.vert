@@ -18,10 +18,10 @@ out mat4 modelM;
 void main()
 {
     // calculates current position
-	crntPos = vec3(uMV_m * vec4(aPos, 1.0f));
+	crntPos = vec3(uProj_m * vec4(aPos, 1.0f));
     // Outputs the positions/coordinates of all vertices
     gl_Position = uProj_m * uMV_m * vec4(aPos, 1.0f);
-    modelM = uProj_m * uMV_m;
+    modelM = uProj_m;
     texcoord = aTex;
     Normal = aNormal;
 }

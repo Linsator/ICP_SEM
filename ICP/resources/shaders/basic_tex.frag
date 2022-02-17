@@ -3,7 +3,6 @@
 in vec2 texcoord;
 in vec3 Normal;
 in vec3 crntPos;
-
 in mat4 modelM;
 
 uniform vec4 u_diffuse_color;
@@ -36,8 +35,7 @@ vec4 pointLight(Light light)
 
 	// intensity of light with respect to distance
 	float dist = length(lightVec);
-	float inten = 10000.0f / (light.intenA * dist * dist + light.intenB * dist + 1.0f);
-
+	float inten = 1000.0f / (light.intenA * dist * dist + light.intenB * dist + 1.0f);
 
 	// diffuse lighting
 	vec3 normal = normalize(Normal);
@@ -68,7 +66,7 @@ vec4 direcLight(Light light)
 	float specAmount = pow(max(dot(viewDirection, reflectionDirection), 0.0f), 16);
 	float specular = specAmount * specularLight;
 
-	return (texture(tex0, texcoord) * (diffuse + light.ambient + specular))* light.lightColor;
+	return (texture(tex0, texcoord) * (diffuse + light.ambient))* light.lightColor;
 }
 
 vec4 spotLight(Light light)
@@ -105,5 +103,5 @@ void main()
 	vec4 pointLight3 = pointLight(lights[3]);
 
     FragColor = directLight + pointLight1 + pointLight2 + pointLight3;
-	//FragColor = modelM * vec4(lights[0].lightPos, 1.0f);
+
 }
