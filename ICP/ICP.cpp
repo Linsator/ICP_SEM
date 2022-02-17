@@ -40,13 +40,20 @@
 #include "lua_engine.h"
 #include "lua_interface.h"
 
-// First person "shooter" akorát s lukem. Støílení na terèe, které se pohybují,
+// First person "shooter". Støílení na terèe, které se pohybují,
 // vždy po znièení všech se objeví další a tøeba se zrychlí jejich pohyb.
 // 
 // Transparentnost: okolo hráèe se budou pohybovat prùhledné pøekážky.
 // Threads: pozice oblièeje dává offset pozice hráèe na možnost míøení. 
 
 /* TODO:
+*
+** EXTRAS
+** scripting (useful)
+** audio
+*	cool sound when hit centre
+*
+* DONE:
 * realtime 2D raster processing = tracker (can be separate project), threads:
 *	Cam face tracking in separate thread
 *	set face coords as avatar offset, separate offset to not mess with jump
@@ -54,16 +61,6 @@
 * collisions:
 *	Physics of arrow (movement and collision)
 *	Create/modify Class to encapsulate meshes and their position for collision (and drawing?)
-*
-** EXTRAS
-** particles
-*	arrow hits target vs somthing else
-*	wow efect when you reach a winning score
-** scripting (useful)
-** audio
-*	cool sound when hit centre
-*
-* DONE:
 * correct transparency:
 *	swithing glEnable(GL_CULL_FACE);
 * lighting model, at least 2 lights (1x ambient + Nx something else):
@@ -77,6 +74,9 @@
 *	find textures
 *	update obj loader and mesh to load textures automatically?
 * EXTRAS
+** particles
+*	arrow hits target vs somthing else
+*	wow efect when you reach a winning score
 ** height map textured by height, proper player height coords
 */
 
