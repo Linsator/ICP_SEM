@@ -74,7 +74,7 @@ void transparentAdd() {
 	Transparent* newTransparent = new Transparent();
 	newTransparent->life = 3;
 	newTransparent->scale = glm::vec3(10.0f);
-	newTransparent->position = glm::vec3(8.0f, 2.0f, 0);
+	newTransparent->position = glm::vec3(10.0f, 5.0f, 0);
 	globals.transparents.push_back(newTransparent);
 }
 
@@ -85,9 +85,9 @@ void transparentDestroy(Transparent* transparent, int at) {
 
 void particleAdd(Arrow* arrow) {
 	Particle* newParticle = new Particle();
-	newParticle->lifeTime = 0.5;
+	newParticle->lifeTime = 0.3;
 	newParticle->scale = glm::vec3(0.25f);
-	newParticle->position = arrow->position + arrow->bBox_shift;
+	newParticle->position = arrow->position;
 	newParticle->speed = glm::vec3(0.0f);
 	globals.particles.push_back(newParticle);
 }

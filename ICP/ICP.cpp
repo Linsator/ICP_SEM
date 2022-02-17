@@ -262,9 +262,9 @@ void physics_step()
 
 		if (glm::length(particle->speed) < 1.0) //speed vector length
 		{
-			particle->speed.x = random(-1, 1);
-			particle->speed.y = random( 0, 5);
-			particle->speed.z = random(-1, 1);
+			particle->speed.x = random(-2, 2);
+			particle->speed.y = random( 0, 10);
+			particle->speed.z = random(-2, 2);
 		}
 		else {
 			particle->position += particle->speed * glm::vec3(delta_t);
@@ -309,13 +309,13 @@ void check_collision()
 			glm::bvec3 collision = glm::bvec3(false);
 			// collision x-axis
 			collision.x = a_xyzPoint0Pos.x + a->bBox_scale.x >= tar_xyzPoint0Pos.x
-				&& tar->position.x + tar->scale.x / 2 >= a_xyzPoint0Pos.x;
+				&& tar->position.x + tar->scale.x >= a_xyzPoint0Pos.x;
 			// collision y-axis
 			collision.y = a_xyzPoint0Pos.y + a->bBox_scale.y >= tar_xyzPoint0Pos.y
-				&& tar->position.y + tar->scale.y / 2 >= a_xyzPoint0Pos.y;
+				&& tar->position.y + tar->scale.y >= a_xyzPoint0Pos.y;
 			// collision z-axis
 			collision.z = a_xyzPoint0Pos.z + a->bBox_scale.z >= tar_xyzPoint0Pos.z
-				&& tar->position.z + tar->scale.z / 2 >= a_xyzPoint0Pos.z;
+				&& tar->position.z + tar->scale.z >= a_xyzPoint0Pos.z;
 			// collision only if all axis collides
 			if (collision.x && collision.y && collision.z)
 				resolve_target_arrow_collision(tar, j, a, i);
@@ -330,13 +330,13 @@ void check_collision()
 			glm::bvec3 collision = glm::bvec3(false);
 			// collision x-axis
 			collision.x = a_xyzPoint0Pos.x + a->bBox_scale.x >= trans_xyzPoint0Pos.x
-				&& trans->position.x + trans->scale.x / 2 >= a_xyzPoint0Pos.x;
+				&& trans->position.x + trans->scale.x >= a_xyzPoint0Pos.x;
 			// collision y-axis
 			collision.y = a_xyzPoint0Pos.y + a->bBox_scale.y >= trans_xyzPoint0Pos.y
-				&& trans->position.y + trans->scale.y / 2 >= a_xyzPoint0Pos.y;
+				&& trans->position.y + trans->scale.y >= a_xyzPoint0Pos.y;
 			// collision z-axis
 			collision.z = a_xyzPoint0Pos.z + a->bBox_scale.z >= trans_xyzPoint0Pos.z
-				&& trans->position.z + trans->scale.z / 2 >= a_xyzPoint0Pos.z;
+				&& trans->position.z + trans->scale.z >= a_xyzPoint0Pos.z;
 			// collision only if all axis collides
 			if (collision.x && collision.y && collision.z)
 				resolve_transparent_arrow_collision(trans, j, a, i);
@@ -357,18 +357,18 @@ void resolve_target_arrow_collision(Target* target, int tar_idx, Arrow* arrow, i
 
 void resolve_transparent_arrow_collision(Transparent* transparent, int trans_idx, Arrow* arrow, int arr_idx)
 {
-	arrowDestroy(arrow, arr_idx);
 	transparent->life--;
 	if (transparent->life == 0)
 	{
+		create_particles(arrow, random(500, 1000));
 		transparentDestroy(transparent, trans_idx);
-		create_particles(arrow, random(10, 20));
+		arrowDestroy(arrow, arr_idx);
 	}
 	else
 	{
+		create_particles(arrow, random(10, 20));
 		arrow->canMove = false;
 		arrow->position -= arrow->direction;
-		create_particles(arrow, random(100, 150));
 	}
 }
 
