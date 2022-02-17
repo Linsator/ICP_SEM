@@ -51,6 +51,9 @@
     <ClCompile Include="Audio_reader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="heightmap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="globals.h">
@@ -89,6 +92,9 @@
     <ClInclude Include="Audio_reader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="heightmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\basic.frag">
@@ -122,6 +128,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="resources\ArrowTex.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="resources\terrain.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

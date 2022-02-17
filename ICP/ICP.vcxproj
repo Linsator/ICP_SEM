@@ -160,6 +160,7 @@
     <ClCompile Include="Audio_reader.cpp" />
     <ClCompile Include="glerror.cpp" />
     <ClCompile Include="globals.cpp" />
+    <ClCompile Include="heightmap.cpp" />
     <ClCompile Include="ICP.cpp" />
     <ClCompile Include="init.cpp" />
     <ClCompile Include="lua_engine.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="callbacks.h" />
     <ClInclude Include="glerror.h" />
     <ClInclude Include="globals.h" />
+    <ClInclude Include="heightmap.h" />
     <ClInclude Include="init.h" />
     <ClInclude Include="lua_engine.h" />
     <ClInclude Include="lua_interface.h" />
@@ -197,6 +199,7 @@
   <ItemGroup>
     <Image Include="resources\ArrowTex.png" />
     <Image Include="resources\placeholder.png" />
+    <Image Include="resources\terrain.png" />
     <Image Include="resources\transparent.png" />
   </ItemGroup>
   <ItemGroup>
