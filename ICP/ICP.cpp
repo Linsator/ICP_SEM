@@ -97,16 +97,6 @@ void create_mesh();
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 float random(float min, float max);
 
-struct Light {
-	// Gets the color of the light from the main function
-	glm::vec4 lightColor;
-	// Gets the position of the light from the main function
-	glm::vec3 lightPos;
-	float intenA;
-	float intenB;
-	float ambient;
-};
-
 //global variables
 shaders shader;
 bool stats = false;
