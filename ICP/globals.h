@@ -91,6 +91,8 @@ struct s_globals {
 
 	cv::VideoCapture capture;
 	lua_engine lua;
+
+	cv::Mat heightMap;
 };
 
 extern s_globals globals;
@@ -111,5 +113,7 @@ void targetDestroy(Target* target, int at);
 
 void transparentAdd();
 void transparentDestroy(Transparent* transparent, int at);
+void transparentDestroy(Transparent* transparent, int at);
 
 void particleAdd(Arrow* arrow);
+uchar getHeightAt(float x, float z);

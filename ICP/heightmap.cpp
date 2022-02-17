@@ -87,41 +87,74 @@ mesh HeightMap(cv::Mat& hmap, unsigned int mesh_step_size, const char * texPath)
 			glm::vec2 tc3 = tc0 + glm::vec2(0.0f, 1.0f / 4);       //add offset for bottom leftcorner
 			
 			//place vertices and ST to mesh
+			//   3-----2
+			//   |    /|
+			//   |  /  |
+			//   |/    |
+			//   0-----1
+			//
+			// p0 = 0
+			// p1 = 3
+			// p2 = 2
+			// p3 = 1
+
+			glm::vec3 vecFrom1TO0 = p0 - p3;
+			glm::vec3 vecFrom1TO2 = p2 - p3;
+			glm::vec3 normal0 = glm::normalize(glm::cross(vecFrom1TO2, vecFrom1TO0));
+
 			vertex v0;
 			v0.position = p0 - offset;
 			v0.texcoord = tc0; 
-			v0.normals = glm::vec3(0.0f, 1.0f, 0.0f);
+			v0.normals = normal0;
 			
 			vertex v1;
-			v1.position = p1 - offset;
-			v1.texcoord = tc1;
-			v1.normals = glm::vec3(0.0f, 1.0f, 0.0f);
+			v1.position = p3 - offset;
+			v1.texcoord = tc3;
+			v1.normals = normal0;
 
 			vertex v2;
 			v2.position = p2 - offset;
 			v2.texcoord = tc2;
-			v2.normals = glm::vec3(0.0f, 1.0f, 0.0f);
+			v2.normals = normal0;
+
+			//------------------------
+			glm::vec3 vecFrom5TO3 = p0 - p1;
+			glm::vec3 vecFrom5TO4 = p2 - p1;
+			glm::vec3 normal1 = glm::normalize(glm::cross(vecFrom5TO3, vecFrom5TO4));
 
 			vertex v3;
-			v3.position = p3 - offset;
-			v3.texcoord = tc3;
-			v3.normals = glm::vec3(0.0f, 1.0f, 0.0f);
+			v3.position = p0 - offset;
+			v3.texcoord = tc0;
+			v3.normals = normal1;
+
+			vertex v4;
+			v4.position = p2 - offset;
+			v4.texcoord = tc2;
+			v4.normals = normal1;
+
+			vertex v5;
+			v5.position = p1 - offset;
+			v5.texcoord = tc1;
+			v5.normals = normal1;
+
 			
 			vertices.push_back(v0);
-			vertices.push_back(v3);
-			vertices.push_back(v2);
 			vertices.push_back(v1);
+			vertices.push_back(v2);
+
+			vertices.push_back(v3);
+			vertices.push_back(v4);
+			vertices.push_back(v5);
 			
-			// 0 1 2 -> 0 2 1, 0 2 3 -> 0 3 2 
 
 			// place indices			
 			indices.push_back(i);
 			indices.push_back(i+1);
 			indices.push_back(i+2);
-			indices.push_back(i);
-			indices.push_back(i+2);
 			indices.push_back(i+3);
-			i += 4;
+			indices.push_back(i+4);
+			indices.push_back(i+5);
+			i += 6;
 		
 		}
 	}

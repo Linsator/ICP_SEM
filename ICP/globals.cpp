@@ -85,3 +85,8 @@ void particleAdd(Arrow* arrow) {
 	newParticle->speed = glm::vec3(10.0f);
 	globals.particles.push_back(newParticle);
 }
+
+uchar getHeightAt(float x, float z) {
+	int offset = globals.heightMap.cols / 2;
+	return globals.heightMap.at<uchar>(cv::Point(round(x) + offset, round(z) + offset));
+}

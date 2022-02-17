@@ -172,6 +172,7 @@ void create_mesh()
 	cv::Mat hmap = cv::imread(hm_file, cv::IMREAD_GRAYSCALE);
 
 	mesh_floor = HeightMap(hmap, 10, "resources/terrain.png"); //image, step size
+	globals.heightMap = hmap;
 	
 }
 
@@ -203,6 +204,7 @@ void app_loop()
 			}
 			*/
 		}
+
 
 		//draw_scene(local_center_relative);
 		physics_step();
@@ -297,7 +299,7 @@ void check_collision()
 		glm::vec3 a_xyzPoint0Pos = glm::vec3(a->position.x + a->bBox_shift.x - a->bBox_scale.x / 2, a->position.y + a->bBox_shift.y, a->position.z + a->bBox_shift.z - a->bBox_scale.z / 2);
 
 		//collision arrows with ground
-		if (a_xyzPoint0Pos.y <= 0)
+		if (a_xyzPoint0Pos.y <= getHeightAt(a_xyzPoint0Pos.x, a_xyzPoint0Pos.z))
 			a->canMove = false;
 
 		// collision arrows with targets
@@ -399,8 +401,8 @@ void draw_scene()
 
 	// point
 	lights[1] = { glm::vec4(1.0f,0.0f,0.0f,1.0f), glm::vec3(20.0f,30.0f,0.0f), 1.5f,0.7f,0.0f };
-	lights[2] = { glm::vec4(0.0f,1.0f,0.0f,1.0f), glm::vec3(20.0f,1.0f,40.0f), 1.5f,0.7f,0.0f };
-	lights[3] = { glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec3(20.0f,1.0f,-40.0f), 1.5f,0.7f,0.0f };
+	lights[2] = { glm::vec4(0.0f,1.0f,0.0f,1.0f), glm::vec3(20.0f,10.0f,40.0f), 1.5f,0.7f,0.0f };
+	lights[3] = { glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec3(20.0f,10.0f,-40.0f), 1.5f,0.7f,0.0f };
 
 
 	shader.activate();
