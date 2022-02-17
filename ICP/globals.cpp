@@ -80,16 +80,9 @@ void transparentAdd() {
 	Transparent* newTransparent = new Transparent();
 	newTransparent->life = 3;
 	newTransparent->scale = glm::vec3(10.0f);
-	glm::vec3 pos = RandomPos(10, 100, -50, 50);
-
-	if (pos.y == -1.0f) {
-		delete newTransparent;
-		return;
-	}
-
-	newTransparent->position.z = pos.z;
-	newTransparent->position.y = pos.x;
-	newTransparent->position.x = 10.0f;
+	newTransparent->position.z = random(-20, 20);
+	newTransparent->position.y = random(5, 20);
+	newTransparent->position.x = 20.0f;
 
 	globals.transparents.push_back(newTransparent);
 }
