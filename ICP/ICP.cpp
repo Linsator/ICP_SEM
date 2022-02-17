@@ -33,6 +33,7 @@
 #include "mesh.h"
 #include "mesh_gen.h"
 #include "OBJloader.h"
+#include "heightmap.h"
 
 #include "lua_engine.h"
 #include "lua_interface.h"
@@ -110,6 +111,7 @@ mesh mesh_floor;
 mesh mesh_target;
 mesh mesh_transparent;
 mesh mesh_arrow;
+mesh mesh_height_map;
 
 // sem nic nedávat!!!
 
@@ -157,9 +159,17 @@ void create_mesh()
 {
 	mesh_target = gen_mesh_cube("resources/target.png");
 	mesh_transparent = gen_mesh_floor("resources/transparent.png", 1);
-	mesh_floor = gen_mesh_floor("resources/justGray.png", 1000);
+	//mesh_floor = gen_mesh_floor("resources/justGray.png", 1000);
 	//mesh_arrow = gen_mesh_cube("resources/arrow.png");
 	mesh_arrow = loadOBJ("resources/models/arrowv3.obj", "resources/ArrowTex.png");
+
+	
+	// height map
+	std::string hm_file("resources/heights.png");
+	cv::Mat hmap = cv::imread(hm_file, cv::IMREAD_GRAYSCALE);
+
+	mesh_floor = HeightMap(hmap, 10, "resources/terrain.png"); //image, step size
+	
 }
 
 void app_loop()
