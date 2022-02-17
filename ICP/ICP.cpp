@@ -175,7 +175,7 @@ void create_mesh()
 	mesh_target = gen_mesh_cube("resources/target.png");
 	mesh_transparent = gen_mesh_floor("resources/transparent.png", 1);
 	//mesh_floor = gen_mesh_floor("resources/justGray.png", 1000);
-	mesh_particles = gen_mesh_cube("resources/arrow.png");
+	mesh_particles = gen_mesh_cube("resources/justGray.png");
 	mesh_arrow = loadOBJ("resources/models/arrowv3.obj", "resources/ArrowTex.png");
 	mesh_floor = HeightMap(globals.heightMap, 10, "resources/terrain.png"); //image, step size
 	
@@ -349,7 +349,7 @@ void physics_step()
 		if (glm::length(particle->speed) < 1.0) //speed vector length
 		{
 			particle->speed.x = random(-2, 2);
-			particle->speed.y = random( 0, 10);
+			particle->speed.y = random( 0, 6);
 			particle->speed.z = random(-2, 2);
 		}
 		else {
@@ -424,7 +424,7 @@ void check_collision()
 			collision.z = a_xyzPoint0Pos.z + a->bBox_scale.z >= trans_xyzPoint0Pos.z
 				&& trans->position.z + trans->scale.z >= a_xyzPoint0Pos.z;
 			// collision only if all axis collides
-			if (collision.x && collision.y && collision.z)
+			if (collision.x && collision.y && collision.z && a->canMove)
 				resolve_transparent_arrow_collision(trans, j, a, i);
 		}
 	}
@@ -432,12 +432,12 @@ void check_collision()
 
 void resolve_target_arrow_collision(Target* target, int tar_idx, Arrow* arrow, int arr_idx)
 {
-	arrowDestroy(arrow, arr_idx);
 	if (arrow->canMove)
 	{
 		targetDestroy(target, tar_idx);
 		create_particles(arrow, random(100, 200));
 	}
+	arrowDestroy(arrow, arr_idx);
 	
 }
 
@@ -454,7 +454,6 @@ void resolve_transparent_arrow_collision(Transparent* transparent, int trans_idx
 	{
 		create_particles(arrow, random(10, 20));
 		arrow->canMove = false;
-		arrow->position -= arrow->direction;
 	}
 }
 
