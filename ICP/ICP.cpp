@@ -93,6 +93,7 @@ void physics_step();
 void stat_tracking();
 void create_mesh();
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
+float random(float min, float max);
 
 struct Light {
 	// Gets the color of the light from the main function
@@ -221,18 +222,25 @@ void app_loop()
 	}
 }
 
+float random(float min, float max)
+{
+	return min + (float)rand() / ((float)RAND_MAX / (max - min));
+}
+
 void physics_step()
 {
 	double t = glfwGetTime();
+	const float DECREMENT = 0.95f;
 	static double prev_t = t;
 	glm::vec3 g = {0, -9.81, 0};
 	glm::vec3 drag = {1.25, 1.0, 1.25};
+	
+	// compute how long between steps
+	float delta_t = t - prev_t;
 
 	for (int i = 0; i < globals.arrows.size(); i++)
 	{
 		Arrow* a = globals.arrows[i];
-		// compute how long between steps
-		float delta_t = t - prev_t;
 
 		if (a->canMove)
 		{
@@ -251,6 +259,28 @@ void physics_step()
 		if (a->lifeTime < 0)
 			arrowDestroy(a, i);
 	}
+
+	for (auto particle = globals.particles.begin(); particle != globals.particles.end(); ++particle)
+	{
+		if (glm::length(particle->speed) < 1.0) //speed vector length
+		{
+			particle->position = { 0.0f, 100.0f, 0.0f };
+			particle->speed.x = random(-10, 10);
+			particle->speed.y = random(-30, 30);
+			particle->speed.z = random(-10, 10);
+		}
+		else {
+			particle->position += particle->speed * glm::vec3(delta_t);
+
+			if (particle->position.y <= 0.0f) {
+				particle->speed.x *= DECREMENT;
+				particle->speed.y *= -DECREMENT;
+				particle->speed.z *= DECREMENT;
+			}
+			particle->speed.y += 0.1f * (-9.8f) * delta_t;
+		}
+	}
+
 	prev_t = t;
 }
 
@@ -330,6 +360,7 @@ void resolve_transparent_arrow_collision(Transparent* transparent, int trans_idx
 	//else
 	//	arrow->canMove = false;
 }
+
 
 void draw_scene()
 {

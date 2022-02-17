@@ -55,6 +55,12 @@ typedef struct Transparent {
 	uint life;
 } Transparent;
 
+struct s_particle {
+	glm::vec3 position;
+	glm::vec3 speed;
+};
+
+
 struct s_globals {
 	GLFWwindow* window;
 	int height;
@@ -72,11 +78,13 @@ struct s_globals {
 
 	Avatar * avatar;
 
-	std::vector <Target*> targets;
+	std::vector<Target*> targets;
 
-	std::vector <Arrow*> arrows;
+	std::vector<Arrow*> arrows;
 
-	std::vector <Transparent*> transparents;
+	std::vector<Transparent*> transparents;
+
+	std::vector<s_particle> particles;
 
 	cv::VideoCapture capture;
 	lua_engine lua;
