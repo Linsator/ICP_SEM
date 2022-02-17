@@ -30,6 +30,22 @@ Avatar avatarMoveDown(Avatar& avatar) {
 	return avatar;
 }
 
+
+void targetAdd() {
+	Target* newTarget = new Target();
+	newTarget->speed = 2;
+	newTarget->radius = 10;
+	newTarget->scale = glm::vec3(10.0f);
+	newTarget->position = glm::vec3(0.0);
+	newTarget->direction = glm::normalize(globals.avatar->lookAt);
+	globals.targets.push_back(newTarget);
+}
+
+void targetDestroy(Target* target, int at) {
+	globals.targets.erase(globals.targets.begin() + at);
+	delete target;
+}
+
 void arrowShoot() {
 	Arrow *newArrow = new Arrow();
 	float speed = 50;
@@ -48,23 +64,15 @@ void arrowDestroy(Arrow* arrow, int at) {
 	delete arrow;
 }
 
-void targetAdd() {
-	Target* newTarget = new Target();
-	newTarget->speed = 2;
-	newTarget->radius = 10;
-	newTarget->scale = glm::vec3(10.0f);
-	newTarget->position = glm::vec3(0.0);
-	newTarget->direction = glm::normalize(globals.avatar->lookAt);
-	globals.targets.push_back(newTarget);
-}
-
-void targetDestroy(Target* target, int at) {
-	globals.targets.erase(globals.targets.begin() + at);
-	delete target;
-}
-
 void transparentAdd() {
 	Transparent* newTransparent = new Transparent();
-	newTransparent->position = glm::vec3(0.0);
+	newTransparent->life = 3;
+	newTransparent->scale = glm::vec3(10.0f);
+	newTransparent->position = glm::vec3(8.0f, 2.0f, 0);
 	globals.transparents.push_back(newTransparent);
+}
+
+void transparentDestroy(Transparent* transparent, int at) {
+	globals.transparents.erase(globals.transparents.begin() + at);
+	delete transparent;
 }

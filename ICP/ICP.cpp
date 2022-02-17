@@ -88,6 +88,7 @@ void app_loop();
 void draw_scene();
 void check_collision();
 void resolve_target_arrow_collision(Target* target, int tar_idx, Arrow* arrow, int arr_idx);
+void resolve_transparent_arrow_collision(Transparent* transparent, int trans_idx, Arrow* arrow, int arr_idx);
 void physics_step();
 void stat_tracking();
 void create_mesh();
@@ -274,6 +275,27 @@ void check_collision()
 			if (collision.x && collision.y && collision.z)
 				resolve_target_arrow_collision(tar, j, a, i);
 		}
+
+		//collision with transparent glasses
+		for (int j = 0; j < globals.transparents.size(); j++)
+		{
+			Transparent* trans = globals.transparents[j];
+			glm::vec3 trans_xyzPoint0Pos = glm::vec3(trans->position.x - trans->scale.x / 2, trans->position.y, trans->position.z - trans->scale.z / 2);
+
+			glm::bvec3 collision = glm::bvec3(false);
+			// collision x-axis
+			collision.x = a_xyzPoint0Pos.x + a->bBox_scale.x >= trans_xyzPoint0Pos.x
+				&& trans->position.x + trans->scale.x / 2 >= a_xyzPoint0Pos.x;
+			// collision y-axis
+			collision.y = a_xyzPoint0Pos.y + a->bBox_scale.y >= trans_xyzPoint0Pos.y
+				&& trans->position.y + trans->scale.y / 2 >= a_xyzPoint0Pos.y;
+			// collision z-axis
+			collision.z = a_xyzPoint0Pos.z + a->bBox_scale.z >= trans_xyzPoint0Pos.z
+				&& trans->position.z + trans->scale.z / 2 >= a_xyzPoint0Pos.z;
+			// collision only if all axis collides
+			if (collision.x && collision.y && collision.z)
+				resolve_transparent_arrow_collision(trans, j, a, i);
+		}
 	}
 }
 
@@ -282,6 +304,18 @@ void resolve_target_arrow_collision(Target* target, int tar_idx, Arrow* arrow, i
 	arrowDestroy(arrow, arr_idx);
 	//do particles
 	targetDestroy(target, tar_idx);
+}
+
+void resolve_transparent_arrow_collision(Transparent* transparent, int trans_idx, Arrow* arrow, int arr_idx)
+{
+	arrowDestroy(arrow, arr_idx);
+	transparent->life--;
+	if (transparent->life == 0)
+	{
+		transparentDestroy(transparent, trans_idx);
+	}
+	//else
+	//	arrow->canMove = false;
 }
 
 void draw_scene()
@@ -463,16 +497,15 @@ void draw_scene()
 	for (int i = 0; i < globals.transparents.size(); i++)
 	{
 		Transparent* transp = globals.transparents[i];
-		transp->position = glm::vec3(8.0f, 2.0f, 0);
 
-		auto target = glm::translate(mv_m, transp->position);
-		target = glm::rotate(target, glm::pi<float>()/2, glm::vec3(0.0f, 0.0f, 1.0f));
+		auto trans = glm::translate(mv_m, transp->position);
+		trans = glm::rotate(trans, glm::pi<float>()/2, glm::vec3(0.0f, 0.0f, 1.0f));
 		//set material 
 		//glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
 		reset_projection();
 		//scale
-		target = glm::scale(target, glm::vec3(10.0f));
-		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(target));
+		trans = glm::scale(trans, transp->scale);
+		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "uMV_m"), 1, GL_FALSE, glm::value_ptr(trans));
 		//set texture unit
 		glActiveTexture(GL_TEXTURE0);
 		//send unit number to FS
@@ -592,6 +625,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			glfwSetWindowShouldClose(window, GL_TRUE);
 			break;
 		case GLFW_KEY_F:
+			// f_screen ? toWindowed() : toFullscreen();
 			if (f_screen)
 				toWindowed();
 			else
@@ -619,13 +653,22 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_T:
 			transparentAdd();
 			break;
+		case GLFW_KEY_G:
+			if (globals.transparents.size() > 0)
+				transparentDestroy(globals.transparents[globals.targets.size() - 1], globals.targets.size() - 1);
+			break;
 		case GLFW_KEY_M:
 			targetAdd();
+			break;
+		case GLFW_KEY_K:
+			if (globals.targets.size() > 1)
+				targetDestroy(globals.targets[globals.targets.size() - 1], globals.targets.size() - 1);
+			break;
+		case GLFW_KEY_LEFT_CONTROL:
 			break;
 		case GLFW_KEY_SPACE:
 			// jump pls
 			break;
-		case GLFW_KEY_LEFT_CONTROL:
 		case GLFW_KEY_Q:
 			avatarMoveDown(*(globals.avatar));
 			break;
@@ -634,9 +677,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			break;
 		case GLFW_KEY_KP_SUBTRACT:
 			if (globals.avatar->movement_speed > 1) 
-			{
 				globals.avatar->movement_speed -= 1;
-			}
 			break;
 		case GLFW_KEY_F1:
 			stats = stats ? false : true; // switch state
@@ -646,9 +687,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			break;
 		case GLFW_KEY_DOWN:
 			if (globals.targets.size() > 1) 
-			{
 				targetDestroy(globals.targets[globals.targets.size() - 1], globals.targets.size() - 1);
-			}
 			break;
 		default:
 			break;

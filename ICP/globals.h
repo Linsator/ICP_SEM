@@ -50,6 +50,9 @@ typedef struct Arrow {
 
 typedef struct Transparent {
 	glm::vec3 position;
+	glm::vec3 scale;
+
+	uint life;
 } Transparent;
 
 struct s_globals {
@@ -96,3 +99,4 @@ void targetAdd();
 void targetDestroy(Target* target, int at);
 
 void transparentAdd();
+void transparentDestroy(Transparent* transparent, int at);
