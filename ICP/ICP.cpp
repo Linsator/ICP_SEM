@@ -297,10 +297,7 @@ glm::vec2 process_frame(cv::Mat& frame)
 	return result;
 }
 
-float random(float min, float max)
-{
-	return min + (float)rand() / ((float)RAND_MAX / (max - min));
-}
+
 
 void physics_step()
 {
