@@ -55,10 +55,13 @@ typedef struct Transparent {
 	uint life;
 } Transparent;
 
-struct s_particle {
+typedef struct Particle {
 	glm::vec3 position;
 	glm::vec3 speed;
-};
+	glm::vec3 scale;
+
+	float lifeTime;
+} Particle;
 
 
 struct s_globals {
@@ -84,7 +87,7 @@ struct s_globals {
 
 	std::vector<Transparent*> transparents;
 
-	std::vector<s_particle> particles;
+	std::vector<Particle*> particles;
 
 	cv::VideoCapture capture;
 	lua_engine lua;
@@ -108,3 +111,5 @@ void targetDestroy(Target* target, int at);
 
 void transparentAdd();
 void transparentDestroy(Transparent* transparent, int at);
+
+void particleAdd(Arrow* arrow);
