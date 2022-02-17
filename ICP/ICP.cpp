@@ -262,9 +262,9 @@ void physics_step()
 
 		if (glm::length(particle->speed) < 1.0) //speed vector length
 		{
-			particle->speed.x = random(-10, 10);
-			particle->speed.y = random(-30, 30);
-			particle->speed.z = random(-10, 10);
+			particle->speed.x = random(-1, 1);
+			particle->speed.y = random( 0, 5);
+			particle->speed.z = random(-1, 1);
 		}
 		else {
 			particle->position += particle->speed * glm::vec3(delta_t);
@@ -295,7 +295,10 @@ void check_collision()
 
 		//collision arrows with ground
 		if (a_xyzPoint0Pos.y <= getHeightAt(a_xyzPoint0Pos.x, a_xyzPoint0Pos.z))
+		{
 			a->canMove = false;
+			// create_particles(a, random(1000, 1500));
+		}
 
 		// collision arrows with targets
 		for (int j = 0; j < globals.targets.size(); j++)
@@ -347,7 +350,7 @@ void resolve_target_arrow_collision(Target* target, int tar_idx, Arrow* arrow, i
 	if (arrow->canMove)
 	{
 		targetDestroy(target, tar_idx);
-		create_particles(arrow, random(5, 15));
+		create_particles(arrow, random(100, 200));
 	}
 	
 }
@@ -359,20 +362,22 @@ void resolve_transparent_arrow_collision(Transparent* transparent, int trans_idx
 	if (transparent->life == 0)
 	{
 		transparentDestroy(transparent, trans_idx);
-		create_particles(arrow, random(30, 50));
+		create_particles(arrow, random(10, 20));
 	}
 	else
 	{
 		arrow->canMove = false;
 		arrow->position -= arrow->direction;
-		create_particles(arrow, random(5, 15));
+		create_particles(arrow, random(100, 150));
 	}
 }
 
 void create_particles(Arrow* arrow, int count)
 {
 	for (int i = 0; i < count; i++)
+	{
 		particleAdd(arrow);
+	}
 }
 
 
