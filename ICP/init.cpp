@@ -13,9 +13,7 @@ shaders init(void)
 	shaders ret = init_shader();
 	init_height_map();
 	init_avatar();
-	
-	// i don't have camera
-	//init_camera();
+	init_camera();
 
 	return ret;
 }
