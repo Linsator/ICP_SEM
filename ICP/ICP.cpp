@@ -156,7 +156,7 @@ void create_mesh()
 {
 	mesh_target = gen_mesh_cube("resources/placeholder.png");
 	mesh_transparent = gen_mesh_floor("resources/transparent.png", 1);
-	mesh_floor = gen_mesh_floor("resources/placeholder.png", 1000);
+	mesh_floor = gen_mesh_floor("resources/justGray.png", 1000);
 	//mesh_arrow = gen_mesh_cube("resources/arrow.png");
 	mesh_arrow = loadOBJ("resources/models/arrowv3.obj", "resources/ArrowTex.png");
 }
@@ -254,20 +254,17 @@ void draw_scene()
 	//
 
 	// Set the camera to use avatar
-	glm::mat4 mv_m = glm::lookAt(globals.avatar->position, globals.avatar->position + globals.avatar->lookAt, glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::mat4 mv_m = glm::lookAt(globals.avatar->position, globals.avatar->position + normalize(globals.avatar->lookAt), glm::vec3(0.0f, 1.0f, 0.0f));
 
-
-	glm::vec3 lightPos = { 20.0f,5.0f,10.0f };
-	glm::vec4 lightColor = { 1.0f,1.0f,1.0f, 1.0f }; // blue so it's visible
 
 	Light lights[4];
 	// direct
-	lights[0] = { glm::vec4(0.5f,0.5f,0.5f,1.0f), glm::vec3(1.0f,1.0f,0.0f), 1.0f,1.0f,0.2f };
+	lights[0] = { glm::vec4(1.0f,1.0f,1.0f,1.0f), glm::vec3(1.0f,1.0f,1.0f), 0.0f,0.0f,0.3f };
 
 	// point
-	lights[1] = { glm::vec4(1.0f,0.0f,0.0f,1.0f), glm::vec3(20.0f,40.0f,0.0f), 1.5f,0.7f,0.0f };
-	lights[2] = { glm::vec4(0.0f,1.0f,0.0f,1.0f), glm::vec3(20.0f,0.0f,40.0f), 1.5f,0.7f,0.0f };
-	lights[3] = { glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec3(20.0f,0.0f,-40.0f), 1.5f,0.7f,0.0f };
+	lights[1] = { glm::vec4(1.0f,0.0f,0.0f,1.0f), glm::vec3(20.0f,30.0f,0.0f), 1.5f,0.7f,0.0f };
+	lights[2] = { glm::vec4(0.0f,1.0f,0.0f,1.0f), glm::vec3(20.0f,1.0f,40.0f), 1.5f,0.7f,0.0f };
+	lights[3] = { glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec3(20.0f,1.0f,-40.0f), 1.5f,0.7f,0.0f };
 
 
 	shader.activate();
@@ -317,8 +314,10 @@ void draw_scene()
 		glActiveTexture(GL_TEXTURE0);
 		glUniform1i(glGetUniformLocation(shader.ID, "tex0"), 0);
 		// Gets the position of the camera from the main function
+		// 
 		//uniform vec3 camPos;
-		glUniform3fv(glGetUniformLocation(shader.ID, "camPos"), 1, glm::value_ptr(globals.avatar->position));
+		glm::vec3 camPos = { globals.avatar->position.x, globals.avatar->position.y, -globals.avatar->position.z };
+		glUniform3fv(glGetUniformLocation(shader.ID, "camPos"), 1, glm::value_ptr(camPos));
 
 		
 	}
@@ -375,7 +374,7 @@ void draw_scene()
 		auto arrow = glm::translate(mv_m, a->position);
 
 		// make it bigger
-		arrow = glm::scale(arrow, glm::vec3(10.0f));
+		//arrow = glm::scale(arrow, glm::vec3(10.0f));
 
 		//rotation facing right direction
 		float theta = glm::acos(glm::dot(glm::normalize(glm::vec3(0.0, 0.0, 1.0)), glm::normalize(glm::vec3(a->direction.x, 0.0, a->direction.z))));
