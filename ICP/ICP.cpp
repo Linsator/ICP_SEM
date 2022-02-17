@@ -375,7 +375,7 @@ void draw_scene()
 		auto arrow = glm::translate(mv_m, a->position);
 
 		// make it bigger
-		arrow = glm::scale(arrow, glm::vec3(10.0f));
+		arrow = glm::scale(arrow, glm::vec3(3.0f));
 
 		//rotation facing right direction
 		float theta = glm::acos(glm::dot(glm::normalize(glm::vec3(0.0, 0.0, 1.0)), glm::normalize(glm::vec3(a->direction.x, 0.0, a->direction.z))));
