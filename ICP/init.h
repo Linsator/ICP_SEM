@@ -11,6 +11,7 @@ void gl_print_info(void);
 shaders init_shader(void);
 void init_avatar();
 void init_camera();
+void init_height_map();
 
 
 void finalize(int code);

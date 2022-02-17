@@ -7,18 +7,22 @@ s_globals globals;
 Avatar avatarMoveForward(Avatar& avatar)
 {
 	avatar.position = glm::vec3(avatar.position.x + (avatar.lookAt.x * avatar.movement_speed), avatar.position.y, avatar.position.z + (avatar.lookAt.z * avatar.movement_speed));
+	avatar.position.y = getHeightAt(avatar.position.x, avatar.position.z) + avatar.height;
 	return avatar;
 }
 Avatar avatarMoveBackward(Avatar& avatar) {
 	avatar.position = glm::vec3(avatar.position.x - avatar.lookAt.x * avatar.movement_speed, avatar.position.y, avatar.position.z - avatar.lookAt.z * avatar.movement_speed);
+	avatar.position.y = getHeightAt(avatar.position.x, avatar.position.z) + avatar.height;
 	return avatar;
 }
 Avatar avatarMoveLeft(Avatar& avatar) {
 	avatar.position = glm::vec3(avatar.position.x + avatar.lookAt.z * avatar.movement_speed, avatar.position.y, avatar.position.z - avatar.lookAt.x * avatar.movement_speed);
+	avatar.position.y = getHeightAt(avatar.position.x, avatar.position.z) + avatar.height;
 	return avatar;
 }
 Avatar avatarMoveRight(Avatar& avatar) {
 	avatar.position = glm::vec3(avatar.position.x - avatar.lookAt.z * avatar.movement_speed, avatar.position.y, avatar.position.z + avatar.lookAt.x * avatar.movement_speed);
+	avatar.position.y = getHeightAt(avatar.position.x, avatar.position.z) + avatar.height;
 	return avatar;
 }
 Avatar avatarMoveUp(Avatar& avatar) {
@@ -36,10 +40,12 @@ void targetAdd() {
 	newTarget->speed = 2;
 	newTarget->radius = 10;
 	newTarget->scale = glm::vec3(10.0f);
-	newTarget->position = glm::vec3(0.0);
+	newTarget->position = RandomPos(20,200, -100, 100);
+	newTarget->position.y = getHeightAt(newTarget->position.x, newTarget->position.z);
 	newTarget->direction = glm::normalize(globals.avatar->lookAt);
 	globals.targets.push_back(newTarget);
 }
+
 
 void targetDestroy(Target* target, int at) {
 	globals.targets.erase(globals.targets.begin() + at);
@@ -94,4 +100,12 @@ void particleDestroy(Particle* particle, int at) {
 uchar getHeightAt(float x, float z) {
 	int offset = globals.heightMap.cols / 2;
 	return globals.heightMap.at<uchar>(cv::Point(round(x) + offset, round(z) + offset));
+}
+
+
+glm::vec3 RandomPos(int xLow, int xHigh, int zLow, int zHigh) {
+	std::srand(std::time(nullptr)); // use current time as seed for random generator
+	int xrand = std::rand();
+	int zrand = std::rand();
+	return glm::vec3((float)(xLow + xrand % (xHigh - xLow)), 0.0f, (float)(zLow + zrand % (zHigh - zLow)));
 }

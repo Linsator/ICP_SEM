@@ -49,16 +49,11 @@
 *	Cam face tracking in separate thread
 *	set face coords as avatar offset, separate offset to not mess with jump
 *
-*
-* correct transparency:
-*	swithing glEnable(GL_CULL_FACE);
-*
 * collisions:
 *	Physics of arrow (movement and collision)
 *	Create/modify Class to encapsulate meshes and their position for collision (and drawing?)
 *
 ** EXTRAS
-** height map textured by height, proper player height coords
 ** particles
 *	arrow hits target vs somthing else
 *	wow efect when you reach a winning score
@@ -67,6 +62,8 @@
 *	cool sound when hit centre
 *
 * DONE:
+* correct transparency:
+*	swithing glEnable(GL_CULL_FACE);
 * lighting model, at least 2 lights (1x ambient + Nx something else):
 *	Mostly done, just fix positions of lights
 * mouse (both axes), keyboard, fullscreen vs. windowed switching:
@@ -77,6 +74,8 @@
 * textures:
 *	find textures
 *	update obj loader and mesh to load textures automatically?
+* EXTRAS
+** height map textured by height, proper player height coords
 */
 
 // forward declarations
@@ -163,16 +162,9 @@ void create_mesh()
 	mesh_target = gen_mesh_cube("resources/target.png");
 	mesh_transparent = gen_mesh_floor("resources/transparent.png", 1);
 	//mesh_floor = gen_mesh_floor("resources/justGray.png", 1000);
-	mesh_arrow = loadOBJ("resources/models/arrowv3.obj", "resources/ArrowTex.png");
 	mesh_particles = gen_mesh_cube("resources/arrow.png");
-
-	
-	// height map
-	std::string hm_file("resources/heights.png");
-	cv::Mat hmap = cv::imread(hm_file, cv::IMREAD_GRAYSCALE);
-
-	mesh_floor = HeightMap(hmap, 10, "resources/terrain.png"); //image, step size
-	globals.heightMap = hmap;
+	mesh_arrow = loadOBJ("resources/models/arrowv3.obj", "resources/ArrowTex.png");
+	mesh_floor = HeightMap(globals.heightMap, 10, "resources/terrain.png"); //image, step size
 	
 }
 
@@ -493,10 +485,6 @@ void draw_scene()
 	for(int i = 0; i < globals.targets.size(); i ++)
 	{
 		Target* tar = globals.targets[i];
-
-		double t = tar->speed * glfwGetTime();		
-		tar->position = glm::vec3(50.0f, tar->radius + tar->radius * cos(t + phase_shift * i), tar->radius * sin(t + phase_shift * i));
-
 		auto target = glm::translate(mv_m, tar->position);
 
 		//set material 

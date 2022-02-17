@@ -1,5 +1,5 @@
 #pragma once
-
+#include <cstdlib>
 // OpenGL Extension Wrangler
 #include <GL/glew.h> 
 #include <GL/wglew.h> //WGLEW = Windows GL Extension Wrangler (change for different platform) 
@@ -25,6 +25,7 @@ typedef struct  Avatar {   // camera (player) info
 	float		mouse_sensitivity;
 	bool		lock_cam_move_angles;
 	float		movement_speed;
+	float		height;
 } Avatar;
 
 typedef struct Target {
@@ -119,3 +120,5 @@ void particleAdd(Arrow* arrow);
 void particleDestroy(Particle* particle, int at);
 
 uchar getHeightAt(float x, float z);
+
+glm::vec3 RandomPos(int xLow, int xHigh, int zLow, int zHigh);
