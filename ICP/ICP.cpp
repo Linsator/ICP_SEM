@@ -182,10 +182,10 @@ void app_loop()
 		// Clear color buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		glm::vec2 facePos;
 		// Render here 
 		{
 			cv::Mat local_frame;
-			glm::vec2 facePos;
 
 			if (new_frame) {
 				frame.copyTo(local_frame);
