@@ -325,12 +325,12 @@ void physics_step()
 
 
 			// apply cam pos in Y
-			a->direction.y += 10 * delta_t * (globals.avatar->facePos.y - 0.5);
+			a->direction.y += 20 * delta_t * (globals.avatar->facePos.y - 0.5f);
 
 			// apply cam pos in XZ
 			glm::vec3 xzvec = glm::vec3(a->direction.x, 0.0f, 0.0f) + glm::vec3(0.0f, 0.0f, a->direction.z);
-			glm::vec3 dolevaVec = glm::normalize(glm::cross(xzvec, glm::vec3(0.0f, a->direction.y, 0.0f)));
-			a->direction += 10 * delta_t * dolevaVec * (-globals.avatar->facePos.x + 0.5);
+			glm::vec3 dolevaVec = glm::normalize(glm::cross(xzvec, glm::vec3(0.0f, 1.0f, 0.0f)));
+			a->direction += 20 * delta_t * dolevaVec * (-globals.avatar->facePos.x + 0.5f);
 			
 			//compute new position
 			a->position += a->direction * delta_t;
