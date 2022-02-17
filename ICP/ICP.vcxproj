@@ -195,6 +195,7 @@
     <None Include="resources\shaders\toon_uni.frag" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="resources\ArrowTex.png" />
     <Image Include="resources\placeholder.png" />
     <Image Include="resources\transparent.png" />
   </ItemGroup>
