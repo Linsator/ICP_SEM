@@ -49,16 +49,11 @@
 *	Cam face tracking in separate thread
 *	set face coords as avatar offset, separate offset to not mess with jump
 *
-*
-* correct transparency:
-*	swithing glEnable(GL_CULL_FACE);
-*
 * collisions:
 *	Physics of arrow (movement and collision)
 *	Create/modify Class to encapsulate meshes and their position for collision (and drawing?)
 *
 ** EXTRAS
-** height map textured by height, proper player height coords
 ** particles
 *	arrow hits target vs somthing else
 *	wow efect when you reach a winning score
@@ -67,6 +62,8 @@
 *	cool sound when hit centre
 *
 * DONE:
+* correct transparency:
+*	swithing glEnable(GL_CULL_FACE);
 * lighting model, at least 2 lights (1x ambient + Nx something else):
 *	Mostly done, just fix positions of lights
 * mouse (both axes), keyboard, fullscreen vs. windowed switching:
@@ -77,6 +74,8 @@
 * textures:
 *	find textures
 *	update obj loader and mesh to load textures automatically?
+* EXTRAS
+** height map textured by height, proper player height coords
 */
 
 // forward declarations
