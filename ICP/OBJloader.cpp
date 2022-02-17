@@ -1,27 +1,42 @@
 #include <string>
 #include <GL/glew.h> 
 #include <glm/glm.hpp>
+// OpenCV 
+#include <opencv2\opencv.hpp>
 
 #include "OBJloader.h"
 
 #define array_cnt(a) ((unsigned int)(sizeof(a)/sizeof(a[0])))
 
-bool loadOBJ(const char * path, std::vector < glm::vec3 > & out_vertices, std::vector < glm::vec2 > & out_uvs, std::vector < glm::vec3 > & out_normals)
+mesh loadOBJ(const char* modelPath, const char* texPath)
 {
+	mesh tmpmesh;
+
+
+	std::vector<vertex> vertices;
+	std::vector<GLuint> indices;
+
+	/* {
+	{glm::vec3(size, 0, size),glm::vec2(0.0f, 0.0f), glm::vec3(0,1.0f,0)},
+	{glm::vec3(size, 0, -size),glm::vec2(1.0f, 0.0f), glm::vec3(0,1.0f,0)},
+	{glm::vec3(-size, 0, -size),glm::vec2(1.0f, 1.0f), glm::vec3(0,1.0f,0)},
+	{glm::vec3(-size, 0, size),glm::vec2(0.0f, 1.0f), glm::vec3(0,1.0f,0)}
+	};*/
+	//std::vector<GLuint> indices = { 0,1,2,0,2,3 };
+
+
+
+
 	std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
 	std::vector< glm::vec3 > temp_vertices;
 	std::vector< glm::vec2 > temp_uvs;
 	std::vector< glm::vec3 > temp_normals;
 
-	out_vertices.clear();
-	out_uvs.clear();
-	out_normals.clear();
-
-	FILE * file;
-	fopen_s(&file, path, "r");
+	FILE* file;
+	fopen_s(&file, modelPath, "r");
 	if (file == NULL) {
 		printf("Impossible to open the file !\n");
-		return false;
+		return tmpmesh;
 	}
 
 	while (1) {
@@ -53,7 +68,7 @@ bool loadOBJ(const char * path, std::vector < glm::vec3 > & out_vertices, std::v
 			int matches = fscanf_s(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
 			if (matches != 9) {
 				printf("File can't be read by simple parser :( Try exporting with other options\n");
-				return false;
+				return tmpmesh;
 			}
 			vertexIndices.push_back(vertexIndex[0]);
 			vertexIndices.push_back(vertexIndex[1]);
@@ -67,8 +82,14 @@ bool loadOBJ(const char * path, std::vector < glm::vec3 > & out_vertices, std::v
 		}
 	}
 
+	fclose(file);
+
+
 	// unroll from indirect to direct vertex specification
 	// not necessary, not optimal
+	std::vector< glm::vec3 > out_vertices;
+	std::vector< glm::vec2 > out_uvs;
+	std::vector< glm::vec3 > out_normals;
 
 	for (unsigned int u = 0; u < vertexIndices.size(); u++) {
 		unsigned int vertexIndex = vertexIndices[u];
@@ -86,6 +107,29 @@ bool loadOBJ(const char * path, std::vector < glm::vec3 > & out_vertices, std::v
 		out_normals.push_back(normal);
 	}
 
-	fclose(file);
-	return true;
+	if (out_vertices.size() != out_uvs.size() && out_uvs.size() != out_normals.size())
+	{
+		printf("Size of arrays doesn't match. ERROR\n");
+		return tmpmesh;
+	}
+
+	for (int i = 0; i < out_vertices.size(); i = i+3) {
+		vertex v1 = { out_vertices[i], out_uvs[i], out_normals[i] };
+		vertex v2 = { out_vertices[i+1], out_uvs[i+1], out_normals[i+1] };
+		vertex v3 = { out_vertices[i+2], out_uvs[i+2], out_normals[i+2] };
+
+		vertices.push_back(v1);
+		vertices.push_back(v2);
+		vertices.push_back(v3);
+
+		indices.push_back(i);
+		indices.push_back(i+1);
+		indices.push_back(i+2);
+	}
+
+	cv::Mat image = cv::imread(texPath, cv::IMREAD_UNCHANGED);
+	cv::flip(image, image, 0);
+	tmpmesh.init(GL_TRIANGLES, vertices, indices, image);
+
+	return tmpmesh;
 }
