@@ -18,6 +18,8 @@ typedef struct  Avatar {   // camera (player) info
 
 	glm::vec3 position;
 
+	glm::vec2 facePos;
+
 	glm::vec3 lookAt; // look direction, not coors where to look at
 
 	float		radius;

@@ -96,7 +96,7 @@ void check_collision();
 void resolve_target_arrow_collision(Target*, int, Arrow*, int);
 void resolve_transparent_arrow_collision(Transparent*, int, Arrow*, int);
 void create_particles(Arrow*, int);
-void physics_step(glm::vec2 facePos);
+void physics_step();
 void stat_tracking();
 void create_mesh();
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
@@ -187,21 +187,21 @@ void app_loop()
 		// Clear color buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glm::vec2 facePos;
+		// glm::vec2 facePos;
 		// Render here 
 		{
 			cv::Mat local_frame;
 
 			if (new_frame) {
 				frame.copyTo(local_frame);
-				facePos = center_relative;
+				globals.avatar->facePos = center_relative;
 				new_frame = false;
 
 				// flip image vertically: screen coordinates and GL world coordinates have opposite Y-axis orientation
 				cv::flip(local_frame, local_frame, 0);
-				facePos.y = 1.0f + -1.0f * facePos.y;
+				globals.avatar->facePos.y = 1.0f + -1.0f * globals.avatar->facePos.y;
 
-				std::cout << "Face at x:" << facePos.x << ", y:" << facePos.y << std::endl;
+				std::cout << "Face at x:" << globals.avatar->facePos.x << ", y:" << globals.avatar->facePos.y << std::endl;
 			}
 			{
 				// show image using GL, simple method, direct pixel copy
@@ -213,7 +213,7 @@ void app_loop()
 
 
 		//draw_scene(local_center_relative);
-		physics_step(facePos);
+		physics_step();
 		check_collision();
 		draw_scene();
 		// ...
@@ -299,7 +299,7 @@ glm::vec2 process_frame(cv::Mat& frame)
 
 
 
-void physics_step(glm::vec2 facePos)
+void physics_step()
 {
 	double t = glfwGetTime();
 	const float DECREMENT = 0.95f;
@@ -369,7 +369,6 @@ void physics_step(glm::vec2 facePos)
 
 void check_collision()
 {
-	//nothing yet
 	for (int i = 0; i < globals.arrows.size(); i++)
 	{
 		Arrow* a = globals.arrows[i];
