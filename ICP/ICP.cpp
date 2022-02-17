@@ -107,6 +107,7 @@ glm::vec2 process_frame(cv::Mat& frame);
 //global variables
 shaders shader;
 bool stats = false;
+bool faceCamera = true;
 mesh mesh_floor;
 mesh mesh_target;
 mesh mesh_transparent;
@@ -238,6 +239,8 @@ void process_video(cv::VideoCapture& capture, std::atomic<glm::vec2>& center_rel
 		//exit(EXIT_FAILURE);
 		return;
 	}
+	else if (!faceCamera)
+		return;
 	cv::Mat local_frame;
 	glm::vec2 temp_center;
 	int camera_frame_count(0);
@@ -323,14 +326,16 @@ void physics_step()
 			a->direction.y -= a->direction.y * drag.y * delta_t;
 			a->direction.z -= a->direction.z * drag.z * delta_t;
 
+			if (faceCamera)
+			{
+				// apply cam pos in Y
+				a->direction.y += 20 * delta_t * (globals.avatar->facePos.y - 0.5f);
 
-			// apply cam pos in Y
-			a->direction.y += 20 * delta_t * (globals.avatar->facePos.y - 0.5f);
-
-			// apply cam pos in XZ
-			glm::vec3 xzvec = glm::vec3(a->direction.x, 0.0f, 0.0f) + glm::vec3(0.0f, 0.0f, a->direction.z);
-			glm::vec3 dolevaVec = glm::normalize(glm::cross(xzvec, glm::vec3(0.0f, 1.0f, 0.0f)));
-			a->direction += 20 * delta_t * dolevaVec * (-globals.avatar->facePos.x + 0.5f);
+				// apply cam pos in XZ
+				glm::vec3 xzvec = glm::vec3(a->direction.x, 0.0f, 0.0f) + glm::vec3(0.0f, 0.0f, a->direction.z);
+				glm::vec3 dolevaVec = glm::normalize(glm::cross(xzvec, glm::vec3(0.0f, 1.0f, 0.0f)));
+				a->direction += 20 * delta_t * dolevaVec * (-globals.avatar->facePos.x + 0.5f);
+			}
 			
 			//compute new position
 			a->position += a->direction * delta_t;
@@ -790,6 +795,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			else
 				toFullscreen();
 			f_screen = !f_screen;
+			break;
+		case GLFW_KEY_C:
+			faceCamera = !faceCamera;
 			break;
 		case GLFW_KEY_B:
 			globals.arrows.clear();
