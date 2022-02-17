@@ -48,12 +48,6 @@
 *	Cam face tracking in separate thread
 *	set face coords as avatar offset, separate offset to not mess with jump
 *
-* multiple moving 3D models, at leats one loaded from file:
-*	Moving targets, Bow, Arrow, transparent obstacle
-*
-* textures:
-*	find textures
-*	update obj loader and mesh to load textures automatically?
 *
 * lighting model, at least 2 lights (1x ambient + Nx something else):
 *	Mostly done, just fix positions of lights
@@ -77,6 +71,12 @@
 * DONE:
 * mouse (both axes), keyboard, fullscreen vs. windowed switching:
 * 3D GL (glew), shaders:*
+* multiple moving 3D models, at leats one loaded from file:
+*	Moving targets, Bow, Arrow, transparent obstacle
+*
+* textures:
+*	find textures
+*	update obj loader and mesh to load textures automatically?
 */
 
 // forward declarations
