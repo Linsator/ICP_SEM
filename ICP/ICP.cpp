@@ -187,22 +187,21 @@ void app_loop()
 		// Clear color buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		glm::vec2 facePos;
+		// glm::vec2 facePos;
 		// Render here 
 		{
 			cv::Mat local_frame;
 
 			if (new_frame) {
 				frame.copyTo(local_frame);
-				facePos = center_relative;
+				globals.avatar->facePos = center_relative;
 				new_frame = false;
 
 				// flip image vertically: screen coordinates and GL world coordinates have opposite Y-axis orientation
 				cv::flip(local_frame, local_frame, 0);
-				facePos.y = 1.0f + -1.0f * facePos.y;
+				globals.avatar->facePos.y = 1.0f + -1.0f * globals.avatar->facePos.y;
 
-				std::cout << "Face at x:" << facePos.x << ", y:" << facePos.y << std::endl;
-				globals.avatar->position.y += facePos.y;
+				std::cout << "Face at x:" << globals.avatar->facePos.x << ", y:" << globals.avatar->facePos.y << std::endl;
 			}
 			{
 				// show image using GL, simple method, direct pixel copy
