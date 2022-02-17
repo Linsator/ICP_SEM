@@ -80,6 +80,11 @@
 ** height map textured by height, proper player height coords
 */
 
+// magic to use dedicated GPU instead of integrated one
+extern "C" {
+	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+}
+
 // forward declarations
 void init_all();
 void reset_projection();
@@ -98,16 +103,6 @@ void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum se
 float random(float min, float max);
 void process_video(cv::VideoCapture& capture, std::atomic<glm::vec2>& center_relative);
 glm::vec2 process_frame(cv::Mat& frame);
-
-struct Light {
-	// Gets the color of the light from the main function
-	glm::vec4 lightColor;
-	// Gets the position of the light from the main function
-	glm::vec3 lightPos;
-	float intenA;
-	float intenB;
-	float ambient;
-};
 
 //global variables
 shaders shader;
@@ -192,21 +187,22 @@ void app_loop()
 		// Clear color buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		glm::vec2 facePos;
 		// Render here 
 		{
 			cv::Mat local_frame;
-			glm::vec2 local_center_relative;
 
 			if (new_frame) {
 				frame.copyTo(local_frame);
-				local_center_relative = center_relative;
+				facePos = center_relative;
 				new_frame = false;
 
 				// flip image vertically: screen coordinates and GL world coordinates have opposite Y-axis orientation
 				cv::flip(local_frame, local_frame, 0);
-				local_center_relative.y = 1.0f + -1.0f * local_center_relative.y;
+				facePos.y = 1.0f + -1.0f * facePos.y;
 
-				std::cout << "Face at x:" << local_center_relative.x << ", y:" << local_center_relative.y << std::endl;
+				std::cout << "Face at x:" << facePos.x << ", y:" << facePos.y << std::endl;
+				globals.avatar->position.y += facePos.y;
 			}
 			{
 				// show image using GL, simple method, direct pixel copy
@@ -331,6 +327,8 @@ void physics_step()
 			a->direction.y -= a->direction.y * drag.y * delta_t;
 			a->direction.z -= a->direction.z * drag.z * delta_t;
 
+
+
 			//compute new position
 			a->position += a->direction * delta_t;
 		}
@@ -375,7 +373,6 @@ void physics_step()
 
 void check_collision()
 {
-	//nothing yet
 	for (int i = 0; i < globals.arrows.size(); i++)
 	{
 		Arrow* a = globals.arrows[i];
