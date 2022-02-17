@@ -142,4 +142,9 @@
       <Filter>Resource Files</Filter>
     </Resource>
   </ItemGroup>
+  <ItemGroup>
+    <Xml Include="resources\haarcascade_frontalface_default.xml">
+      <Filter>Resource Files</Filter>
+    </Xml>
+  </ItemGroup>
 </Project>

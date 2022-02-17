@@ -6,6 +6,8 @@
 #include <chrono>
 #include <stack>
 #include <random>
+#include <thread>	
+#include <mutex>
 
 // OpenCV 
 #include <opencv2\opencv.hpp>
@@ -114,6 +116,10 @@ mesh mesh_transparent;
 mesh mesh_arrow;
 mesh mesh_height_map;
 mesh mesh_particles;
+cv::Mat frame;
+std::atomic<bool> new_frame(false);
+std::atomic<glm::vec2> center_relative;
+
 
 // sem nic nedávat!!!
 
@@ -124,7 +130,12 @@ int main(int argc, char** argv)
 {
 	init_all(); // init all in init.cpp
 
+	std::thread camera_thread = std::thread(process_video, std::ref(globals.capture), std::ref(center_relative));
+
 	app_loop();
+
+	if (camera_thread.joinable())
+		camera_thread.join();
 
 
 	finalize(EXIT_SUCCESS);
@@ -155,6 +166,8 @@ void init_all()
 
 	// scene contains semi-transparent objects
 	//glDisable( GL_CULL_FACE );                    // no polygon removal
+
+
 }
 
 void create_mesh()
@@ -179,7 +192,9 @@ void app_loop()
 
 		// Render here 
 		{
-			/* TODO camera part
+			cv::Mat local_frame;
+			glm::vec2 local_center_relative;
+
 			if (new_frame) {
 				frame.copyTo(local_frame);
 				local_center_relative = center_relative;
@@ -188,13 +203,15 @@ void app_loop()
 				// flip image vertically: screen coordinates and GL world coordinates have opposite Y-axis orientation
 				cv::flip(local_frame, local_frame, 0);
 				local_center_relative.y = 1.0f + -1.0f * local_center_relative.y;
+
+				std::cout << "Face at x:" << local_center_relative.x << ", y:" << local_center_relative.y << std::endl;
 			}
 			{
 				// show image using GL, simple method, direct pixel copy
 				//glRasterPos2i(0, 0);
 				//glDrawPixels(local_frame.cols, local_frame.rows, GL_BGR, GL_UNSIGNED_BYTE, local_frame.data);
 			}
-			*/
+			
 		}
 
 
@@ -214,6 +231,73 @@ void app_loop()
 		// Poll for and process events
 		glfwPollEvents();
 	}
+}
+
+void process_video(cv::VideoCapture& capture, std::atomic<glm::vec2>& center_relative)
+{
+	if (!globals.capture.isOpened())
+	{
+		std::cerr << "no camera" << std::endl;
+		//exit(EXIT_FAILURE);
+		return;
+	}
+	cv::Mat local_frame;
+	glm::vec2 temp_center;
+	int camera_frame_count(0);
+	double last_fps_time = glfwGetTime(), current_time;
+
+	while (!glfwWindowShouldClose(globals.window))
+	{
+		if (capture.read(local_frame))
+		{
+			temp_center = process_frame(local_frame);
+
+			//atomic assignments
+			if (!new_frame) {
+				center_relative = temp_center;
+				local_frame.copyTo(frame);
+				new_frame = true;
+			}
+			camera_frame_count++;
+
+			// print camera analyzer FPS
+			current_time = glfwGetTime();
+			if (current_time - last_fps_time > 1.0 && stats)
+			{
+				std::cout << '[' << current_time << ",cam] FPS = " << camera_frame_count / (current_time - last_fps_time) << std::endl;
+				last_fps_time = current_time;
+				camera_frame_count = 0;
+			}
+		}
+		else
+			glfwSetWindowShouldClose(globals.window, true);
+	}
+}
+
+glm::vec2 process_frame(cv::Mat& frame)
+{
+	glm::vec2 result(0.0f, 0.0f);
+
+	// load clasifier
+	cv::CascadeClassifier face_cascade = cv::CascadeClassifier("resources/haarcascade_frontalface_default.xml");
+
+	// find face
+	cv::Mat scene_gray;
+	cv::cvtColor(frame, scene_gray, cv::COLOR_BGR2GRAY);
+	std::vector<cv::Rect> faces;
+	face_cascade.detectMultiScale(scene_gray, faces);
+	if (faces.size() > 0)
+	{
+		result.x = (faces[0].x + (faces[0].width / 2.0f)) / frame.cols;
+		result.y = (faces[0].y + (faces[0].height / 2.0f)) / frame.rows;
+	}
+
+	// DO NOT DISPLAY! Must not create any OpenCV window!
+	// NO! cv::imshow("grabbed", frame);
+	// DO NOT POLL EVENTS! Must not call cv::waitKey(), it would steal events from GLFW main loop!
+	// NO! cv::waitKey(1);
+
+	return result;
 }
 
 float random(float min, float max)
