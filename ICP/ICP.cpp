@@ -227,7 +227,7 @@ void physics_step()
 	const float DECREMENT = 0.95f;
 	static double prev_t = t;
 	glm::vec3 g = {0, -9.81, 0};
-	glm::vec3 drag = {1.25, 1.0, 1.25};
+	glm::vec3 drag = {0.1, 0.1, 0.1};
 	
 	// compute how long between steps
 	float delta_t = t - prev_t;
@@ -241,7 +241,9 @@ void physics_step()
 		{
 			// compute new velocity = apply gravity to direction and slowdown
 			a->direction += g * delta_t;
-			a->direction -= drag * delta_t;
+			a->direction.x -= a->direction.x * drag.x * delta_t;
+			a->direction.y -= a->direction.y * drag.y * delta_t;
+			a->direction.z -= a->direction.z * drag.z * delta_t;
 
 			//compute new position
 			a->position += a->direction * delta_t;

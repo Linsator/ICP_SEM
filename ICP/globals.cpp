@@ -40,7 +40,13 @@ void targetAdd() {
 	newTarget->speed = 2;
 	newTarget->radius = 10;
 	newTarget->scale = glm::vec3(10.0f);
-	newTarget->position = RandomPos(20,200, -100, 100);
+	newTarget->position = RandomPos(20,400, -150, 150);
+	
+	if (newTarget->position.y == -1.0f) {
+		delete newTarget;
+		return;
+	}
+	
 	newTarget->position.y = getHeightAt(newTarget->position.x, newTarget->position.z);
 	newTarget->direction = glm::normalize(globals.avatar->lookAt);
 	globals.targets.push_back(newTarget);
@@ -103,9 +109,25 @@ uchar getHeightAt(float x, float z) {
 }
 
 
-glm::vec3 RandomPos(int xLow, int xHigh, int zLow, int zHigh) {
+glm::vec3 RandomPos(int xLow, int xHigh, int zLow, int zHigh, int depth) {
+	if (depth > 100)
+	{
+		return  glm::vec3(0.0f, -1.0f, 0.0f);
+	}
 	std::srand(std::time(nullptr)); // use current time as seed for random generator
 	int xrand = std::rand();
 	int zrand = std::rand();
-	return glm::vec3((float)(xLow + xrand % (xHigh - xLow)), 0.0f, (float)(zLow + zrand % (zHigh - zLow)));
+	glm::vec3 pos = glm::vec3((float)(xLow + xrand % (xHigh - xLow)), 0.0f, (float)(zLow + zrand % (zHigh - zLow)));
+
+	//check if threre is already target
+	for (int i = 0; i < globals.targets.size(); i++)
+	{
+		Target* tar = globals.targets[i];
+		if (glm::length(tar->position - pos) < tar->scale.x)
+		{
+			//try again
+			pos = RandomPos(xLow, xHigh, zLow, zHigh, depth + 1);
+		}
+	}
+	return pos;
 }
