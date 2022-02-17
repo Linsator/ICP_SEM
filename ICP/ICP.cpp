@@ -32,6 +32,7 @@
 #include "shaders.h"
 #include "mesh.h"
 #include "mesh_gen.h"
+#include "OBJloader.h"
 
 #include "lua_engine.h"
 #include "lua_interface.h"
@@ -157,7 +158,8 @@ void create_mesh()
 	mesh_target = gen_mesh_cube("resources/placeholder.png");
 	mesh_transparent = gen_mesh_floor("resources/transparent.png", 1);
 	mesh_floor = gen_mesh_floor("resources/placeholder.png", 1000);
-	mesh_arrow = gen_mesh_cube("resources/arrow.png");
+	//mesh_arrow = gen_mesh_cube("resources/arrow.png");
+	mesh_arrow = loadOBJ("resources/models/arrowv3.obj", "resources/placeholder.png");
 }
 
 void app_loop()
