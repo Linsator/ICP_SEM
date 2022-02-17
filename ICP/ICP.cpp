@@ -96,6 +96,8 @@ void stat_tracking();
 void create_mesh();
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
 float random(float min, float max);
+void process_video(cv::VideoCapture& capture, std::atomic<glm::vec2>& center_relative);
+glm::vec2 process_frame(cv::Mat& frame);
 
 struct Light {
 	// Gets the color of the light from the main function
