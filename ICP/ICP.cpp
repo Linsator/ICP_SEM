@@ -91,7 +91,7 @@ void check_collision();
 void resolve_target_arrow_collision(Target*, int, Arrow*, int);
 void resolve_transparent_arrow_collision(Transparent*, int, Arrow*, int);
 void create_particles(Arrow*, int);
-void physics_step();
+void physics_step(glm::vec2 facePos);
 void stat_tracking();
 void create_mesh();
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
@@ -195,18 +195,18 @@ void app_loop()
 		// Render here 
 		{
 			cv::Mat local_frame;
-			glm::vec2 local_center_relative;
+			glm::vec2 facePos;
 
 			if (new_frame) {
 				frame.copyTo(local_frame);
-				local_center_relative = center_relative;
+				facePos = center_relative;
 				new_frame = false;
 
 				// flip image vertically: screen coordinates and GL world coordinates have opposite Y-axis orientation
 				cv::flip(local_frame, local_frame, 0);
-				local_center_relative.y = 1.0f + -1.0f * local_center_relative.y;
+				facePos.y = 1.0f + -1.0f * facePos.y;
 
-				std::cout << "Face at x:" << local_center_relative.x << ", y:" << local_center_relative.y << std::endl;
+				std::cout << "Face at x:" << facePos.x << ", y:" << facePos.y << std::endl;
 			}
 			{
 				// show image using GL, simple method, direct pixel copy
@@ -218,7 +218,7 @@ void app_loop()
 
 
 		//draw_scene(local_center_relative);
-		physics_step();
+		physics_step(facePos);
 		check_collision();
 		draw_scene();
 		// ...
@@ -307,7 +307,7 @@ float random(float min, float max)
 	return min + (float)rand() / ((float)RAND_MAX / (max - min));
 }
 
-void physics_step()
+void physics_step(glm::vec2 facePos)
 {
 	double t = glfwGetTime();
 	const float DECREMENT = 0.95f;
@@ -330,6 +330,8 @@ void physics_step()
 			a->direction.x -= a->direction.x * drag.x * delta_t;
 			a->direction.y -= a->direction.y * drag.y * delta_t;
 			a->direction.z -= a->direction.z * drag.z * delta_t;
+
+
 
 			//compute new position
 			a->position += a->direction * delta_t;
