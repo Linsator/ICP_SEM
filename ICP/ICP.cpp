@@ -85,6 +85,7 @@ void toFullscreen();
 void toWindowed();
 void app_loop();
 void draw_scene();
+void check_collision();
 void physics_step();
 void stat_tracking();
 void create_mesh();
@@ -107,7 +108,6 @@ mesh mesh_floor;
 mesh mesh_target;
 mesh mesh_transparent;
 mesh mesh_arrow;
-unsigned int target_num = 1;
 
 // sem nic nedávat!!!
 
@@ -231,18 +231,14 @@ void physics_step()
 
 		// if arrow runs out of time remove it from vector of arrows and delete from memory
 		if (a->lifeTime < 0)
-		{
-			globals.arrows.erase(globals.arrows.begin() + i);
-			delete a;
-		}
-	
+			arrowDestroy(a, i);
 	}
 	prev_t = t;
 }
 
 void check_collision()
 {
-
+	//nothing yet
 }
 
 void draw_scene()
@@ -254,9 +250,6 @@ void draw_scene()
 	//
 	// DRAW
 	//
-	double speed_multiplier = 2.0;
-	float spin_radius = 10.0f;
-	double t = speed_multiplier * glfwGetTime();
 
 	// Set the camera to use avatar
 	glm::mat4 mv_m = glm::lookAt(globals.avatar->position, globals.avatar->position + globals.avatar->lookAt, glm::vec3(0.0f, 1.0f, 0.0f));
@@ -349,11 +342,15 @@ void draw_scene()
 	}
 
 	// draw targets
-	double phase_shift = (2 * glm::pi<float>())/ target_num;
-	for(int i = 0; i < target_num; i ++)
+	double phase_shift = (2 * glm::pi<float>())/ globals.targets.size();
+	for(int i = 0; i < globals.targets.size(); i ++)
 	{
-		
-		auto target = glm::translate(mv_m, glm::vec3( 50.0f, spin_radius + spin_radius * cos(t + phase_shift*i), spin_radius * sin(t + phase_shift*i)));
+		Target* tar = globals.targets[i];
+
+		double t = tar->speed * glfwGetTime();		
+		tar->position = glm::vec3(50.0f, tar->radius + tar->radius * cos(t + phase_shift * i), tar->radius * sin(t + phase_shift * i));
+
+		auto target = glm::translate(mv_m, tar->position);
 
 		//set material 
 		glUniform4fv(glGetUniformLocation(shader.ID, "u_diffuse_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
@@ -388,9 +385,7 @@ void draw_scene()
 		float fi = glm::acos(glm::dot(glm::normalize(glm::vec3(a->direction.x, 0.0, a->direction.z)), glm::normalize(a->direction)));
 
 		if (a->direction.y < 0)
-		{
 			fi = - fi;
-		}
 		arrow = glm::rotate(arrow, fi, glm::vec3(-1.0f, 0.0f, 0.0f));
 		//
 		/*else if (globals.arrow->direction.z < 0)
@@ -578,6 +573,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		case GLFW_KEY_E:
 			avatarMoveUp(*(globals.avatar));
 			break;
+		case GLFW_KEY_M:
+			targetAdd();
 		case GLFW_KEY_SPACE:
 			// jump pls
 			break;
@@ -589,7 +586,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			globals.avatar->movement_speed += 1;
 			break;
 		case GLFW_KEY_KP_SUBTRACT:
-			if (globals.avatar->movement_speed > 1) {
+			if (globals.avatar->movement_speed > 1) 
+			{
 				globals.avatar->movement_speed -= 1;
 			}
 			break;
@@ -597,11 +595,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			stats = stats ? false : true; // switch state
 			break;
 		case GLFW_KEY_UP:
-			target_num++;
+			targetAdd();
 			break;
 		case GLFW_KEY_DOWN:
-			if (target_num > 1) {
-				target_num--;
+			if (globals.targets.size() > 1) 
+			{
+				targetDestroy(globals.targets[globals.targets.size() - 1], globals.targets.size() - 1);
 			}
 			break;
 		default:
