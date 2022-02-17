@@ -42,6 +42,9 @@ typedef struct Arrow {
 	float lifeTime;
 } Arrow;
 
+typedef struct Transparent {
+	glm::vec3 position;
+} Transparent;
 
 struct s_globals {
 	GLFWwindow* window;
@@ -64,6 +67,8 @@ struct s_globals {
 
 	std::vector <Arrow*> arrows;
 
+	std::vector <Transparent*> transparents;
+
 	cv::VideoCapture capture;
 	lua_engine lua;
 };
@@ -83,3 +88,5 @@ void arrowDestroy(Arrow* arrow, int at);
 
 void targetAdd();
 void targetDestroy(Target* target, int at);
+
+void transparentAdd();
