@@ -486,7 +486,7 @@ void draw_scene()
 	lights[0] = { glm::vec4(1.0f,1.0f,1.0f,1.0f), glm::vec3(1.0f,1.0f,1.0f), 0.0f,0.0f,0.3f };
 
 	// point
-	lights[1] = { glm::vec4(1.0f,0.0f,0.0f,1.0f), glm::vec3(20.0f,30.0f,0.0f), 1.5f,0.7f,0.0f };
+	lights[1] = { glm::vec4(1.0f,0.0f,0.0f,1.0f), glm::vec3(20.0f,10.0f,0.0f), 1.5f,0.7f,0.0f };
 	lights[2] = { glm::vec4(0.0f,1.0f,0.0f,1.0f), glm::vec3(20.0f,10.0f,40.0f), 1.5f,0.7f,0.0f };
 	lights[3] = { glm::vec4(0.0f,0.0f,1.0f,1.0f), glm::vec3(20.0f,10.0f,-40.0f), 1.5f,0.7f,0.0f };
 
