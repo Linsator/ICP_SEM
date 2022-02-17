@@ -64,6 +64,16 @@ typedef struct Particle {
 	float lifeTime;
 } Particle;
 
+struct Light {
+	// Gets the color of the light from the main function
+	glm::vec4 lightColor;
+	// Gets the position of the light from the main function
+	glm::vec3 lightPos;
+	float intenA;
+	float intenB;
+	float ambient;
+};
+
 
 struct s_globals {
 	GLFWwindow* window;

@@ -99,16 +99,6 @@ float random(float min, float max);
 void process_video(cv::VideoCapture& capture, std::atomic<glm::vec2>& center_relative);
 glm::vec2 process_frame(cv::Mat& frame);
 
-struct Light {
-	// Gets the color of the light from the main function
-	glm::vec4 lightColor;
-	// Gets the position of the light from the main function
-	glm::vec3 lightPos;
-	float intenA;
-	float intenB;
-	float ambient;
-};
-
 //global variables
 shaders shader;
 bool stats = false;
