@@ -132,3 +132,5 @@ void particleDestroy(Particle* particle, int at);
 uchar getHeightAt(float x, float z);
 
 glm::vec3 RandomPos(int xLow, int xHigh, int zLow, int zHigh, int depth = 0);
+
+float random(float min, float max);
