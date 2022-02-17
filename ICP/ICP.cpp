@@ -477,7 +477,6 @@ void draw_scene()
 	// Set the camera to use avatar
 	glm::mat4 mv_m = glm::lookAt(globals.avatar->position, globals.avatar->position + normalize(globals.avatar->lookAt), glm::vec3(0.0f, 1.0f, 0.0f));
 
-
 	Light lights[4];
 	// direct
 	lights[0] = { glm::vec4(1.0f,1.0f,1.0f,1.0f), glm::vec3(1.0f,1.0f,1.0f), 0.0f,0.0f,0.3f };
@@ -538,9 +537,7 @@ void draw_scene()
 		// 
 		//uniform vec3 camPos;
 		glm::vec3 camPos = { globals.avatar->position.x, globals.avatar->position.y, -globals.avatar->position.z };
-		glUniform3fv(glGetUniformLocation(shader.ID, "camPos"), 1, glm::value_ptr(camPos));
-
-		
+		glUniform3fv(glGetUniformLocation(shader.ID, "camPos"), 1, glm::value_ptr(camPos));		
 	}
 
 
@@ -679,12 +676,7 @@ void draw_scene()
 
 	glDisable(GL_BLEND);
 	glEnable(GL_CULL_FACE);
-	glDepthMask(GL_TRUE);
-
-
-
-
-		
+	glDepthMask(GL_TRUE);		
 }
 
 
